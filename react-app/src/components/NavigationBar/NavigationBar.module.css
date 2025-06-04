@@ -31,7 +31,9 @@
   gap: 2rem;
 }
 
-a:link, a:visited, a:active {
+a:link,
+a:visited,
+a:active {
   text-decoration: none;
   color: #83c0c1;
 }
@@ -57,8 +59,8 @@ a:link, a:visited, a:active {
   padding: 0.5rem;
 }
 
-.navbarMobileMenu a:link, 
-.navbarMobileMenu a:visited, 
+.navbarMobileMenu a:link,
+.navbarMobileMenu a:visited,
 .navbarMobileMenu a:active {
   color: #6c22a6;
 }
@@ -70,12 +72,17 @@ a:link, a:visited, a:active {
 
 /* Responsive Adjustments - Screens under 600px */
 @media (max-width: 600px) {
+  .navbarLeft {
+    margin-left: 1rem;
+  }
+
   .navbarRightDesktop {
     display: none;
   }
 
   .navbarRightMobile {
     display: flex;
+    margin-right: 1rem;
   }
 
   .navbarDropdownBox:hover .navbarMobileMenu {
