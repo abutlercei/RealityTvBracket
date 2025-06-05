@@ -12,11 +12,15 @@ import {
 import PoolTable from "./PoolTable";
 
 export default function Pool() {
+  const infoBackgroundColor = {
+    backgroundColor: "rgba(131, 192, 193, 0.51)",
+    boxShadow: "3px 3px 2px #83c0c1",
+  };
   return (
     <PageContainer>
       <PoolName>Lone Survivors (Pool Name)</PoolName>
       <PageContent>
-        <ContentBox>
+        <ContentBox style={infoBackgroundColor}>
           <PoolSource>
             Pool from{" "}
             <PageLink

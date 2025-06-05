@@ -1,4 +1,9 @@
-import {} from "../styled/PoolTable";
+import {
+  Table,
+  TableHeader,
+  TableCell,
+  AlternateRow,
+} from "../styled/PoolTable";
 
 export default function PoolTable() {
   const tableData = [
@@ -21,25 +26,34 @@ export default function PoolTable() {
   ];
 
   return (
-    <table>
-      <thead>
+    <Table>
+      <TableHeader>
         <tr>
-          <th>Rank</th>
-          <th>Pool Member</th>
-          <th>Contestant</th>
-          <th>Points</th>
+          <TableCell>Rank</TableCell>
+          <TableCell>Pool Member</TableCell>
+          <TableCell>Contestant</TableCell>
+          <TableCell>Points</TableCell>
         </tr>
-      </thead>
+      </TableHeader>
       <tbody>
-        {tableData.map((row) => (
-          <tr key={row.rank}>
-            <td>{row.rank}</td>
-            <td>{row.poolMem}</td>
-            <td>{row.contestant}</td>
-            <td>{row.points}</td>
-          </tr>
-        ))}
+        {tableData.map((row) =>
+          row.rank % 2 === 0 ? (
+            <tr key={row.rank}>
+              <TableCell>{row.rank}</TableCell>
+              <TableCell>{row.poolMem}</TableCell>
+              <TableCell>{row.contestant}</TableCell>
+              <TableCell>{row.points}</TableCell>
+            </tr>
+          ) : (
+            <AlternateRow key={row.rank}>
+              <TableCell>{row.rank}</TableCell>
+              <TableCell>{row.poolMem}</TableCell>
+              <TableCell>{row.contestant}</TableCell>
+              <TableCell>{row.points}</TableCell>
+            </AlternateRow>
+          )
+        )}
       </tbody>
-    </table>
+    </Table>
   );
 }
