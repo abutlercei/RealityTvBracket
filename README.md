@@ -2,10 +2,15 @@
 The Reality TV Bracket application creates a league for friends to draft new players from their favorite reality television shows to collect points based on how long their draft picks stay in the competition. Think of shows like Survivor, Big Brother, or RuPaul's Drag Race where contestants are eliminated each week with the combination of popular fantasy sports leagues or basketball brackets.
 
 ## Setup and Running
+### Requirements for Local Machine
+Ensure Git, C# SDK, and npm are installed on local machine.
+
 ### Setup on Local Machine
 Clone repository with `git clone` command.
 Navigate into react-app folder with `cd react-app` command.
 Download dependencies by running `npm install` inside the react-app folder.
+Navigate into DotNet folder with `cd ../DotNet` command.
+Download .NET packages by running `dotnet pack` command.
 
 ### Running on Local Machine
 Run on a local host by running `npm run dev` inside the react-app folder.
