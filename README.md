@@ -3,7 +3,7 @@ The Reality TV Bracket application creates a league for friends to draft new pla
 
 ## Setup and Running
 ### Requirements for Local Machine
-Ensure Git, C# SDK, and npm are installed on local machine.
+Ensure [Git](https://git-scm.com/downloads), [C# SDK](https://dotnet.microsoft.com/en-us/download), and [npm](https://nodejs.org/en/download) are installed on local machine.
 
 ### Setup on Local Machine
 Clone repository with `git clone` command.
