@@ -41,13 +41,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-// Use CORS
+app.MapStaticAssets();
+
 app.UseCors();
 
 // Map API Controllers
 app.MapControllers();
 
-// Use SPA only for non-API calls
 app.MapWhen(context => !context.Request.Path.StartsWithSegments("/api"), spa =>
 {
     spa.UseSpa(spaBuilder =>
@@ -60,5 +60,11 @@ app.MapWhen(context => !context.Request.Path.StartsWithSegments("/api"), spa =>
         }
     });
 });
+
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller=Home}/{action=Index}/{id?}")
+//     .WithStaticAssets();
+
 
 app.Run();
