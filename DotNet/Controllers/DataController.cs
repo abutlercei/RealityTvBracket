@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Microsoft.Data.Sqlite;
+using DotNet.Models;
 
 namespace DotNet.Controllers
 {
@@ -8,12 +10,24 @@ namespace DotNet.Controllers
     public class DataController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get(string queryType)
         {
-            const string dbFile = "sample_pools.db";
-            var connectionStr = $"Data Source={dbFile}";
+            Console.WriteLine(queryType);
+            switch (queryType)
+            {
+                case "getProfile":
+                    return GetProfile();
+                default:
+                    break;
+            }
 
-            using (var connection = new SqliteConnection(connectionStr))
+            return "";
+        }
+
+        private string GetProfile()
+        {
+            List<UserProfile> userObjects = [];
+            using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
             {
                 connection.Open();
 
@@ -24,17 +38,32 @@ namespace DotNet.Controllers
                 {
                     while (reader.Read())
                     {
-                        var name = reader.GetString(0);
-                        var username = reader.GetString(1);
-
-                        Console.WriteLine($"UserProfile: {name}, {username}");
+                        UserProfile profile = new()
+                        {
+                            Name = reader.GetString(0),
+                            Username = reader.GetString(1),
+                            Password = reader.GetString(2),
+                        };
+                        userObjects.Add(profile);
                     }
                 }
 
-                connection.Close();    
+                connection.Close();
             }
+            return JsonConvert.SerializeObject(userObjects);
+        }
 
-            return new string[] { "Item1", "Item2", "Item3" };
+        // Call within Home component
+        private void GetHomeObjects()
+        {
+            // Returns objects associated with user if logged in
+            // Returns general objects if logged out
+        }
+
+        // Call within profile when page loads or when user presses search button
+        private void GetSearchResults()
+        {
+            // Returns rows of Pools & Pool Members associated with search results
         }
     }
 }
