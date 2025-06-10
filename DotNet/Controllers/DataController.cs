@@ -12,7 +12,7 @@ namespace DotNet.Controllers
         [HttpGet]
         public string Get(string queryType)
         {
-            Console.WriteLine(queryType);
+            // Console.WriteLine(queryType);
             switch (queryType)
             {
                 case "getProfile":
@@ -32,7 +32,7 @@ namespace DotNet.Controllers
                 connection.Open();
 
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT name, username FROM UserProfile";
+                command.CommandText = "SELECT name, username, password FROM UserProfile";
 
                 using (var reader = command.ExecuteReader())
                 {
