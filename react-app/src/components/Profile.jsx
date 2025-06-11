@@ -1,32 +1,122 @@
 import { useState, useEffect } from "react";
 import { fetchData } from "../services/apiService";
+import {
+  ProfileTitle,
+  ProfileHeading,
+  Container,
+  Column,
+  UserForm,
+} from "../styled/Profile.js";
 
 export default function Profile() {
-  const headingStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  };
-
   const [data, setData] = useState([]);
+
+  // Fetching data on initial load to populate user data update fields
   useEffect(() => {
     async function getData() {
       try {
-        const response = await fetchData("getProfile");
-        setData((prevData) => [...prevData, response]);
+        const response = await fetchData("getProfile", "abutler");
+        if (response) {
+          setData((prevData) => [...prevData, response]);
+        }
       } catch (err) {
         console.error(`Error fetching items: ${err}`);
       }
     }
-
     getData();
   }, []);
 
-  useEffect(() => console.log(data), [data]);
+  // Updating fields when data is populated or updated
+  useEffect(() => {
+    if (data.length > 0 && data[0].length > 0) {
+      const formElements = document.getElementsByClassName("userData");
+      Array.from(formElements).forEach((element) => {
+        if (element.placeholder === "") {
+          if (element.id === "Password") {
+            element.placeholder = "*".repeat(data[0]["0"]["Password"].length); // Repeats password symbol for length of password
+          } else {
+            element.placeholder = data[0]["0"][element.id];
+          }
+        }
+      });
+    }
+  }, [data]);
+
+  // Adding updated elements to database upon user submission
+  async function handleFormSubmission(e) {
+    var dbValues = "";
+    Array.from(e.target.elements).forEach((element) => {
+      if (
+        element.value.length > 0 &&
+        element.value !== data[0]["0"][element.id]
+      ) {
+        // Change split character
+        dbValues += `${element.id}/${element.value}/${data[0]["0"]["Username"]}/`;
+        setData((prevArr) => {
+          var modifiedValue = prevArr;
+          modifiedValue[0]["0"][element.id] = element.value;
+          return modifiedValue;
+        });
+      }
+    });
+    if (dbValues.length > 0) {
+      const response = await fetchData(
+        "updateUser",
+        dbValues.substring(0, dbValues.length - 1)
+      );
+    }
+  }
 
   return (
-    <div style={headingStyle}>
-      <h1>Profile</h1>
+    <div>
+      <div
+        style={{
+          display: data.length > 0 && data[0].length > 0 ? "flex" : "none",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <ProfileTitle>Profile</ProfileTitle>
+        <Container>
+          <Column>
+            <ProfileHeading>Edit Account Details</ProfileHeading>
+            <UserForm onSubmit={handleFormSubmission}>
+              <label>
+                Name: <input type="text" id="Name" className="userData" />
+              </label>
+              <label>
+                Username:
+                <input type="text" id="Username" className="userData" />
+              </label>
+              <label>
+                Password:
+                <input type="password" id="Password" className="userData" />
+              </label>
+              <button type="submit">Confirm Changes</button>
+            </UserForm>
+          </Column>
+          <Column>
+            <ProfileHeading>Pool Memberships</ProfileHeading>
+            <p>
+              Click on button to view current memberships and edit your join
+              status.
+            </p>
+            <button>View Memberships</button>
+            <div>
+              <p>Memberships will appear here.</p>
+            </div>
+          </Column>
+        </Container>
+      </div>
+      <div
+        style={{
+          display: data.length > 0 && data[0].length > 0 ? "none" : "flex",
+        }}
+      >
+        <ProfileTitle>
+          Please Sign Up or Login to Access Profile Information.
+        </ProfileTitle>
+      </div>
     </div>
   );
 }
