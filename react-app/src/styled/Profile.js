@@ -15,6 +15,7 @@ export const ProfileHeading = styled.h2`
 
 export const Container = styled.div`
   display: flex;
+  width: 80%;
   flex-direction: row;
   gap: 3rem;
 
@@ -24,7 +25,7 @@ export const Container = styled.div`
 `;
 
 export const Column = styled.div`
-  width: 40%;
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,4 +60,10 @@ export const Button = styled.button`
   border-radius: 5px;
   padding: 1rem;
   margin-top: 1rem;
+`;
+
+export const MembershipContainer = styled.div`
+  display: none;
+  padding: 2rem;
+  width: 100%;
 `;

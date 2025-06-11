@@ -20,6 +20,8 @@ namespace DotNet.Controllers
                 case "updateUser":
                     UpdateUser(searchValue);
                     break;
+                case "getUserMemberships":
+                    return GetUserMemberships(searchValue);
                 default:
                     break;
             }
@@ -67,12 +69,45 @@ namespace DotNet.Controllers
 
                     var command = connection.CreateCommand();
                     command.CommandText =
-                    $"UPDATE UserProfile SET {updateArr[i]} = '{updateArr[i + 1]}' WHERE username = '{updateArr[i + 2]}' OR username = '{updateArr[i+ 1]}';";
+                    @$"UPDATE UserProfile SET {updateArr[i]} = '{updateArr[i + 1]}' 
+                    WHERE username = '{updateArr[i + 2]}' OR username = '{updateArr[i+ 1]}';";
                     command.ExecuteNonQuery();
 
                     connection.Close();
                 }
             }
+        }
+
+        private string GetUserMemberships(String username)
+        {
+            List<PoolMember> poolObj = [];
+            using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = @$"SELECT pool_name AS 'Name', contestant as 'Contestant', rank_num as 'Rank', 
+                    points as 'Points' FROM PoolMembers WHERE username = '{username}' ORDER BY pool_name;";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        PoolMember pool = new()
+                        {
+                            Username = username,
+                            Name = reader.GetString(0),
+                            Contestant = reader.GetString(1),
+                            Rank = reader.GetInt32(2),
+                            Points = reader.GetInt32(3),
+                        };
+                        poolObj.Add(pool);
+                    }
+                }
+
+                connection.Close();
+            }
+            return JsonConvert.SerializeObject(poolObj);
         }
 
         // Call within Home component
