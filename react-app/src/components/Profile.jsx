@@ -6,10 +6,16 @@ import {
   Container,
   Column,
   UserForm,
+  Input,
+  Button,
 } from "../styled/Profile.js";
 
 export default function Profile() {
   const [data, setData] = useState([]);
+  const infoBackgroundColor = {
+    backgroundColor: "rgba(131, 192, 193, 0.51)",
+    boxShadow: "3px 3px 2px #83c0c1",
+  };
 
   // Fetching data on initial load to populate user data update fields
   useEffect(() => {
@@ -78,21 +84,21 @@ export default function Profile() {
       >
         <ProfileTitle>Profile</ProfileTitle>
         <Container>
-          <Column>
+          <Column style={infoBackgroundColor}>
             <ProfileHeading>Edit Account Details</ProfileHeading>
             <UserForm onSubmit={handleFormSubmission}>
               <label>
-                Name: <input type="text" id="Name" className="userData" />
+                Name: <Input type="text" id="Name" className="userData" />
               </label>
               <label>
                 Username:
-                <input type="text" id="Username" className="userData" />
+                <Input type="text" id="Username" className="userData" />
               </label>
               <label>
                 Password:
-                <input type="password" id="Password" className="userData" />
+                <Input type="password" id="Password" className="userData" />
               </label>
-              <button type="submit">Confirm Changes</button>
+              <Button type="submit">Confirm Changes</Button>
             </UserForm>
           </Column>
           <Column>
@@ -101,7 +107,7 @@ export default function Profile() {
               Click on button to view current memberships and edit your join
               status.
             </p>
-            <button>View Memberships</button>
+            <Button>View Memberships</Button>
             <div>
               <p>Memberships will appear here.</p>
             </div>
