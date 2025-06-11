@@ -1,3 +1,4 @@
+import { createRoot } from "react-dom/client";
 import { useState, useEffect } from "react";
 import { fetchData } from "../services/apiService";
 import {
@@ -8,20 +9,34 @@ import {
   UserForm,
   Input,
   Button,
+  MembershipContainer,
 } from "../styled/Profile.js";
+import PoolTable from "./PoolTable";
 
 export default function Profile() {
   const [data, setData] = useState([]);
+  const [table, setTable] = useState([]);
+  const [viewMembership, setViewMembership] = useState(false);
+  const [membershipFound, setMembershipFound] = useState(false);
+
   const infoBackgroundColor = {
     backgroundColor: "rgba(131, 192, 193, 0.51)",
     boxShadow: "3px 3px 2px #83c0c1",
   };
+  const tableStyle = {
+    margin: "2rem",
+    padding: "2rem",
+    outline: "1px",
+    boxShadow: "3px 3px 2px black",
+  };
+
+  const username = "abutler";
 
   // Fetching data on initial load to populate user data update fields
   useEffect(() => {
     async function getData() {
       try {
-        const response = await fetchData("getProfile", "abutler");
+        const response = await fetchData("getProfile", username);
         if (response) {
           setData((prevData) => [...prevData, response]);
         }
@@ -73,6 +88,31 @@ export default function Profile() {
     }
   }
 
+  // Changes member instructions and add/removes membership list
+  async function handleViewMemberships() {
+    var membershipElement = document.getElementsByClassName("memberships")[0];
+
+    if (viewMembership) {
+      setViewMembership(false);
+      membershipElement.style.display = "none";
+    } else {
+      setViewMembership(true);
+      try {
+        const response = await fetchData("getUserMemberships", username);
+        if (response) {
+          console.log(response);
+          setTable(response);
+          setMembershipFound(true);
+        }
+      } catch (err) {
+        setMembershipFound(false);
+        console.error(`Error fetching items: ${err}`);
+      }
+
+      membershipElement.style.display = "flex";
+    }
+  }
+
   return (
     <div>
       <div
@@ -104,13 +144,20 @@ export default function Profile() {
           <Column>
             <ProfileHeading>Pool Memberships</ProfileHeading>
             <p>
-              Click on button to view current memberships and edit your join
-              status.
+              {viewMembership
+                ? "Click on button to close memberships view."
+                : "Click on button to view current memberships and edit your join status."}
             </p>
-            <Button>View Memberships</Button>
-            <div>
-              <p>Memberships will appear here.</p>
-            </div>
+            <Button onClick={handleViewMemberships}>
+              {viewMembership ? "Close Memberships" : "View Memberships"}
+            </Button>
+            <MembershipContainer className="memberships">
+              {membershipFound ? (
+                <PoolTable tableData={table} style={tableStyle} />
+              ) : (
+                <h3>No pools joined currently!</h3>
+              )}
+            </MembershipContainer>
           </Column>
         </Container>
       </div>
