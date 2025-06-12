@@ -12,16 +12,17 @@ namespace DotNet.Controllers
         [HttpGet]
         public string Get(string queryType, string searchValue)
         {
-            // Console.WriteLine(queryType);
             switch (queryType)
             {
-                case "getProfile":
+                case "getProfile": // Called in Profile component
                     return GetProfile(searchValue);
-                case "updateUser":
+                case "updateUser": // Called in Profile component
                     UpdateUser(searchValue);
                     break;
-                case "getUserMemberships":
+                case "getUserMemberships": // Called in Profile component
                     return GetUserMemberships(searchValue);
+                case "getAllPools": // Called in Search component
+                    return GetAllPools();
                 default:
                     break;
             }
@@ -110,17 +111,50 @@ namespace DotNet.Controllers
             return JsonConvert.SerializeObject(poolObj);
         }
 
+        private string GetAllPools()
+        {
+            List<Pool> poolObj = [];
+            using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = @$"SELECT name, source_name, source_link, host, bio
+                                        FROM Pool ORDER BY source_name, name";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Pool pool = new()
+                        {
+                            Name = reader.GetString(0),
+                            SourceName = reader.GetString(1),
+                            SourceLink = reader.GetString(2),
+                            Host = reader.GetString(3),
+                            Bio = reader.GetString(4)
+                        };
+                        poolObj.Add(pool);
+                    }
+                }
+
+                connection.Close();
+            }
+            return JsonConvert.SerializeObject(poolObj);
+        }
+
+        // Returns pool selected by user
+        private string GetPoolInfo()
+        {
+            // Returns pool members associated with table given
+            return "";
+        }
+
         // Call within Home component
         private void GetHomeObjects()
         {
             // Returns objects associated with user if logged in
             // Returns general objects if logged out
-        }
-
-        // Call within profile when page loads or when user presses search button
-        private void GetSearchResults()
-        {
-            // Returns rows of Pools & Pool Members associated with search results
         }
     }
 }

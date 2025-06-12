@@ -100,7 +100,6 @@ export default function Profile() {
       try {
         const response = await fetchData("getUserMemberships", username);
         if (response) {
-          console.log(response);
           setTable(response);
           setMembershipFound(true);
         }
