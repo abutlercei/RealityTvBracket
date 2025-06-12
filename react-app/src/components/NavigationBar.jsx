@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import LayeredIcons from "./LayeredIcons";
 import {
@@ -15,13 +14,6 @@ import {
 } from "../styled/NavigationBar";
 
 export default function NavigationBar() {
-  const [activeTab, setActiveTab] = useState("home");
-
-  const handleTabClick = (id) => {
-    setActiveTab(id);
-  };
-
-  // Mark NavLink as active using changeActive within onClick attribute
   return (
     <NavBar>
       <NavBarLeft>

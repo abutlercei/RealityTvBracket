@@ -23,6 +23,8 @@ namespace DotNet.Controllers
                     return GetUserMemberships(searchValue);
                 case "getAllPools": // Called in Search component
                     return GetAllPools();
+                case "getPoolInfo": // Called in Search component
+                    return GetPoolInfo(searchValue);
                 default:
                     break;
             }
@@ -120,7 +122,7 @@ namespace DotNet.Controllers
 
                 var command = connection.CreateCommand();
                 command.CommandText = @$"SELECT name, source_name, source_link, host, bio
-                                        FROM Pool ORDER BY source_name, name";
+                                        FROM Pool ORDER BY source_name, name;";
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -144,10 +146,42 @@ namespace DotNet.Controllers
         }
 
         // Returns pool selected by user
-        private string GetPoolInfo()
+        private string GetPoolInfo(String poolName)
         {
-            // Returns pool members associated with table given
-            return "";
+            List<Dictionary<String, String>> poolInfo = new List<Dictionary<String, String>>();
+            using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = @$"SELECT Pool.Name AS 'pool', Pool.source_name, Pool.source_link, Pool.host, Pool.bio,
+                                    Mem.name, Mem.username, Mem.rank_num, Mem.points, Mem.contestant
+                                    FROM Pool JOIN PoolMembers AS 'Mem' ON Pool.Name=Mem.pool_name
+                                    WHERE Mem.pool_name = '{poolName}'
+                                    ORDER BY Mem.rank_num;";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Dictionary<string, string> queryDictionary = [];
+                        queryDictionary.Add("Pool", reader.GetString(0));
+                        queryDictionary.Add("SourceName", reader.GetString(1));
+                        queryDictionary.Add("SourceLink", reader.GetString(2));
+                        queryDictionary.Add("Host", reader.GetString(3));
+                        queryDictionary.Add("Bio", reader.GetString(4));
+                        queryDictionary.Add("Name", reader.GetString(5));
+                        queryDictionary.Add("Username", reader.GetString(6));
+                        queryDictionary.Add("Rank", reader.GetString(7));
+                        queryDictionary.Add("Points", reader.GetString(8));
+                        queryDictionary.Add("Contestant", reader.GetString(9));
+                        poolInfo.Add(queryDictionary);
+                    }
+                }
+
+                connection.Close();
+            }
+            return JsonConvert.SerializeObject(poolInfo);
         }
 
         // Call within Home component

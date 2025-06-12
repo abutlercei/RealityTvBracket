@@ -63,3 +63,15 @@ export const PoolItemContent = styled.div`
   justify-content: space-between;
   margin-top: -2rem;
 `;
+
+export const PoolIconInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ItemIcon = styled(FontAwesomeIcon)`
+  margin-right: 5px;
+  font-size: 1rem;
+`;

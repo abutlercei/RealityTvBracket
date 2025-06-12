@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { fetchData } from "../services/apiService";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faUser,
+  faPhotoFilm,
+} from "@fortawesome/free-solid-svg-icons";
 import Pool from "./Pool";
 import {
   SearchContainer,
@@ -10,11 +14,15 @@ import {
   PoolList,
   PoolItem,
   PoolItemContent,
+  PoolIconInfo,
+  ItemIcon,
 } from "../styled/Search";
 
 export default function Search() {
   const [pools, setPools] = useState([]);
   const [poolKeys, setPoolKeys] = useState([]);
+  const [singlePoolView, setSinglePoolView] = useState(false);
+  const [poolInfo, setPoolInfo] = useState([]);
 
   // Loads all pools upon screen reload
   useEffect(() => {
@@ -35,8 +43,14 @@ export default function Search() {
                     {pool.Name}
                   </h2>
                   <PoolItemContent buttondata={pool.Name}>
-                    <h3 buttondata={pool.Name}>{pool.SourceName}</h3>
-                    <h3 buttondata={pool.Name}>{pool.Host}</h3>
+                    <PoolIconInfo>
+                      <ItemIcon icon={faPhotoFilm} />
+                      <h3 buttondata={pool.Name}>{pool.SourceName}</h3>
+                    </PoolIconInfo>
+                    <PoolIconInfo>
+                      <ItemIcon icon={faUser} />
+                      <h3 buttondata={pool.Name}>{pool.Host}</h3>
+                    </PoolIconInfo>
                   </PoolItemContent>
                 </PoolItem>,
               ]);
@@ -52,20 +66,45 @@ export default function Search() {
     getPools();
   }, []);
 
+  // Event handler when user clicks on a single pool
   async function handleClickPoolCell(e) {
-    console.log(e.target.getAttribute("buttondata"));
-    // Call database to return pool members
-    // Send PoolInfo to pool component
+    try {
+      const response = await fetchData(
+        "getPoolInfo",
+        e.target.getAttribute("buttondata")
+      );
+      if (response) {
+        setPoolInfo(response);
+      }
+    } catch {
+      console.error("Unable to retrieve pool data.");
+    }
+
+    setSinglePoolView(true);
+  }
+
+  // Event handler sent as props over to Pool component to bring back to search
+  function handleArrowClick(e) {
+    setSinglePoolView(false);
   }
 
   return (
-    <SearchContainer>
-      <SearchBox>
-        <SearchIcon icon={faMagnifyingGlass} />
-        <SearchInput type="text" placeholder="Search Pools..." />
-      </SearchBox>
-      <PoolList>{pools}</PoolList>
-      {/* <Pool /> */}
-    </SearchContainer>
+    <div>
+      <SearchContainer
+        className="searchContainer"
+        style={{ display: singlePoolView ? "none" : "flex" }}
+      >
+        <SearchBox>
+          <SearchIcon icon={faMagnifyingGlass} />
+          <SearchInput type="text" placeholder="Search Pools..." />
+        </SearchBox>
+        <PoolList>{pools}</PoolList>
+      </SearchContainer>
+      {singlePoolView ? (
+        <Pool data={poolInfo} onClick={handleArrowClick} />
+      ) : (
+        <div style={{ display: "none" }} />
+      )}
+    </div>
   );
 }

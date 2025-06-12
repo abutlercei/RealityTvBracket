@@ -1,5 +1,13 @@
 // Styled components for Pool component
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+export const BackArrow = styled(FontAwesomeIcon)`
+  float: left;
+  font-size: 3rem;
+  align-self: flex-start;
+  margin: 2rem;
+`;
 
 export const PageContainer = styled.div`
   display: flex;
@@ -63,6 +71,8 @@ export const PoolHost = styled.h3`
     text-align: center;
   }
 `;
+
+export const HighlightHostIcon = styled(FontAwesomeIcon)``;
 
 export const PageLink = styled.a`
   &:link,
