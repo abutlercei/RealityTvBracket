@@ -72,8 +72,6 @@ export const PoolHost = styled.h3`
   }
 `;
 
-export const HighlightHostIcon = styled(FontAwesomeIcon)``;
-
 export const PageLink = styled.a`
   &:link,
   &:visited,
@@ -98,4 +96,10 @@ export const JoinButton = styled.button`
   border-radius: 5px;
   padding: 1rem;
   margin-top: 1rem;
+`;
+
+export const JoinedDiv = styled(JoinButton)`
+  background-color: #2e8b57;
+  color: white;
+  box-shadow: 2px 2px 1px white;
 `;

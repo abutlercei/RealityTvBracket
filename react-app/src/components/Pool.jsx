@@ -10,10 +10,16 @@ import {
   PoolBio,
   JoinButton,
   BackArrow,
-  HighlightHostIcon,
+  JoinedDiv,
 } from "../styled/Pool";
 import PoolTable from "./PoolTable";
-import { faArrowLeft, faHighlighter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faHighlighter,
+  faArrowPointer,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Pool(props) {
   const [hostHightlighted, setHostHightlighted] = useState(false);
@@ -22,6 +28,13 @@ export default function Pool(props) {
     backgroundColor: "rgba(131, 192, 193, 0.51)",
     boxShadow: "3px 3px 2px #83c0c1",
   };
+
+  // Event handler to join a pool
+  function handleRequestToJoin(e) {
+    if (e.target.innerText === "Request to Join") {
+      // Add database call to Request to Join
+    }
+  }
 
   return (
     <PageContainer>
@@ -42,11 +55,24 @@ export default function Pool(props) {
               onMouseLeave={() => setHostHightlighted(false)}
             >
               {props.data["0"]["Host"]}
-              <HighlightHostIcon icon={faHighlighter} />
+              <FontAwesomeIcon icon={faHighlighter} />
             </PageLink>
           </PoolHost>
           <PoolBio>{props.data["0"]["Bio"]}</PoolBio>
-          <JoinButton>Request to Join</JoinButton>
+          {props.data["0"]["Host"] === "abutler" ? (
+            <JoinedDiv disabled="disabled">
+              Joined
+              <FontAwesomeIcon style={{ marginLeft: "1rem" }} icon={faCheck} />
+            </JoinedDiv>
+          ) : (
+            <JoinButton onClick={handleRequestToJoin}>
+              Request to Join
+              <FontAwesomeIcon
+                style={{ marginLeft: "1rem" }}
+                icon={faArrowPointer}
+              />
+            </JoinButton>
+          )}
         </ContentBox>
         <ContentBox>
           <PoolSource>Leaderboard</PoolSource>
