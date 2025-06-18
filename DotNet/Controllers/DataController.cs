@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using Microsoft.Data.Sqlite;
 using DotNet.Models;
 
+// Will be split into separate controllers within resolved pull request!
+// Kept to see class definitions for transfer
 namespace DotNet.Controllers
 {
     [ApiController]
@@ -70,7 +72,7 @@ namespace DotNet.Controllers
                     var command = connection.CreateCommand();
                     command.CommandText =
                     @$"UPDATE UserProfile SET {updateArr[i]} = '{updateArr[i + 1]}' 
-                    WHERE username = '{updateArr[i + 2]}' OR username = '{updateArr[i+ 1]}';";
+                    WHERE username = '{updateArr[i + 2]}' OR username = '{updateArr[i + 1]}';";
                     command.ExecuteNonQuery();
 
                     connection.Close();
@@ -96,7 +98,7 @@ namespace DotNet.Controllers
                         PoolMember pool = new()
                         {
                             Username = username,
-                            Name = reader.GetString(0),
+                            PoolName = reader.GetString(0),
                             Contestant = reader.GetString(1),
                             Rank = reader.GetInt32(2),
                             Points = reader.GetInt32(3),
