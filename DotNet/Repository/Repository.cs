@@ -1,3 +1,5 @@
+using DotNet.Models;
+
 public class Repository : DataRepository
 {
     private readonly SamplePoolDBContext _context;
@@ -5,4 +7,8 @@ public class Repository : DataRepository
     {
         _context = context;
     }
+
+    // public PoolMember GetPoolMember(string username) {
+    //     return new PoolMember();
+    // }
 }

@@ -1,5 +1,6 @@
 using DotNet.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class SamplePoolDBContext : DbContext
 {
@@ -16,10 +17,25 @@ public class SamplePoolDBContext : DbContext
     // Uses onModelCreating to define composite key in PoolMember class
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PoolMember>().HasKey(table => new
-        {
-            table.Username,
-            table.PoolName
-        });
+        modelBuilder.Entity<Pool>()
+            .HasOne(p => p.UserProfile)
+            .WithMany(u => u.Pools)
+            .HasForeignKey(p => p.HostFK)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PoolMember>()
+            .HasKey(table => new { table.UsernameFK, table.PoolNameFK });
+
+        modelBuilder.Entity<PoolMember>()
+            .HasOne(pm => pm.UserProfile)
+            .WithMany(u => u.Members)
+            .HasForeignKey(pm => pm.UsernameFK)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PoolMember>()
+            .HasOne(pm => pm.Pool)
+            .WithMany(p => p.Members)
+            .HasForeignKey(pm => pm.PoolNameFK)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
