@@ -11,14 +11,14 @@ public class PoolMember
 
     // Navigation property
     [ForeignKey("UsernameFK")]
-    public required UserProfile UserProfile { get; set; }
+    public UserProfile? UserProfile { get; set; }
 
     // Foreign key
     public required int PoolNameFK { get; set; }
 
     // Navigation property
     [ForeignKey("PoolNameFK")]
-    public required Pool Pool { get; set; }
+    public Pool? Pool { get; set; }
 
     public int? Rank { get; set; }
     public int? Points { get; set; }

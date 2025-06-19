@@ -11,8 +11,13 @@ namespace DotNet.Controllers
     [Route("api/[controller]")]
     public class DataController : ControllerBase
     {
+        private readonly DataRepository _repository;
+        public DataController(DataRepository repository)
+        {
+            _repository = repository;
+        }
         [HttpGet]
-        public string Get(string queryType, string searchValue)
+        public IActionResult Get(string queryType, string searchValue)
         {
             // Console.WriteLine(queryType);
             switch (queryType)
@@ -21,43 +26,19 @@ namespace DotNet.Controllers
                     return GetProfile(searchValue);
                 case "updateUser":
                     UpdateUser(searchValue);
-                    break;
+                    return Ok();
                 case "getUserMemberships":
-                    return GetUserMemberships(searchValue);
+                    return Ok(GetUserMemberships(searchValue));
                 default:
                     break;
             }
 
-            return "";
+            return NotFound();
         }
 
-        private string GetProfile(string user)
+        private IActionResult GetProfile(string user)
         {
-            List<UserProfile> userObjects = [];
-            // using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
-            // {
-            //     connection.Open();
-
-            //     var command = connection.CreateCommand();
-            //     command.CommandText = $"SELECT name, username, password FROM UserProfile WHERE username = '{user}'";
-
-            //     using (var reader = command.ExecuteReader())
-            //     {
-            //         while (reader.Read())
-            //         {
-            //             UserProfile profile = new()
-            //             {
-            //                 Name = reader.GetString(0),
-            //                 Username = reader.GetString(1),
-            //                 Password = reader.GetString(2),
-            //             };
-            //             userObjects.Add(profile);
-            //         }
-            //     }
-
-            //     connection.Close();
-            // }
-            return JsonConvert.SerializeObject(userObjects);
+            return _repository.GetUserProfile(user);
         }
 
         private void UpdateUser(string user)

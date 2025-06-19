@@ -49,14 +49,14 @@ export default function Profile() {
 
   // Updating fields when data is populated or updated
   useEffect(() => {
-    if (data.length > 0 && data[0].length > 0) {
+    if (data.length > 0) {
       const formElements = document.getElementsByClassName("userData");
       Array.from(formElements).forEach((element) => {
         if (element.placeholder === "") {
           if (element.id === "Password") {
-            element.placeholder = "*".repeat(data[0]["0"]["Password"].length); // Repeats password symbol for length of password
+            element.placeholder = "*".repeat(data["0"]["password"].length); // Repeats password symbol for length of password
           } else {
-            element.placeholder = data[0]["0"][element.id];
+            element.placeholder = data["0"][element.id];
           }
         }
       });
@@ -117,7 +117,7 @@ export default function Profile() {
     <div>
       <div
         style={{
-          display: data.length > 0 && data[0].length > 0 ? "flex" : "none",
+          display: data.length > 0 ? "flex" : "none",
           flexDirection: "column",
           alignItems: "center",
         }}
@@ -128,15 +128,15 @@ export default function Profile() {
             <ProfileHeading>Edit Account Details</ProfileHeading>
             <UserForm onSubmit={handleFormSubmission}>
               <label>
-                Name: <Input type="text" id="Name" className="userData" />
+                Name: <Input type="text" id="name" className="userData" />
               </label>
               <label>
                 Username:
-                <Input type="text" id="Username" className="userData" />
+                <Input type="text" id="username" className="userData" />
               </label>
               <label>
                 Password:
-                <Input type="password" id="Password" className="userData" />
+                <Input type="password" id="password" className="userData" />
               </label>
               <Button type="submit">Confirm Changes</Button>
             </UserForm>
@@ -163,7 +163,7 @@ export default function Profile() {
       </div>
       <div
         style={{
-          display: data.length > 0 && data[0].length > 0 ? "none" : "flex",
+          display: data.length > 0 ? "none" : "flex",
         }}
       >
         <ProfileTitle>

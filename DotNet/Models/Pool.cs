@@ -13,7 +13,7 @@ public class Pool
     public required string SourceLink { get; set; }
     // Navigation property
     [ForeignKey("HostFK")]
-    public required UserProfile UserProfile { get; set; }
+    public UserProfile? UserProfile { get; set; }
     // Foreign Key
     public required string HostFK { get; set; }
     public string? Bio { get; set; }

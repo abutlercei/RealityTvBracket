@@ -1,4 +1,5 @@
 using DotNet.Models;
+using Microsoft.AspNetCore.Mvc;
 
 public class Repository : DataRepository
 {
@@ -8,7 +9,10 @@ public class Repository : DataRepository
         _context = context;
     }
 
-    // public PoolMember GetPoolMember(string username) {
-    //     return new PoolMember();
-    // }
+    public IActionResult GetUserProfile(string username)
+    {
+        return new OkObjectResult(
+            _context.UserProfiles.Find(username)
+        );
+    }
 }

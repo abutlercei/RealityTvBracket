@@ -18,6 +18,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register Database Context
+
+builder.Services.AddDbContext<SamplePoolDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register DataRepository service for database interactions
+builder.Services.AddScoped<DataRepository, Repository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

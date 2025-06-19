@@ -1,10 +1,11 @@
 using DotNet.Models;
+using Microsoft.AspNetCore.Mvc;
 
 public interface DataRepository
 {
     // Commented out to resolve errors within implementation of interface
     
     // PoolMember GetPoolMember(String username);
-    // UserProfile GetUserProfile();
+    IActionResult GetUserProfile(String username);
     // void UpdateUserProfile(UserProfile profile);
 }
