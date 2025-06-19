@@ -139,8 +139,5 @@ public class SamplePoolDBContext : DbContext
             new PoolMember { UsernameFK = "rrosalind", PoolNameFK = 3, Rank = 15, Points = 1, Contestant = "Jessie" },
             new PoolMember { UsernameFK = "jjayden", PoolNameFK = 3, Rank = 16, Points = 0, Contestant = "Diane" }
         );
-
-        // Transfer to individual controllers & fix GET/POST requests
-        // Move to frontend fixes
     }
 }

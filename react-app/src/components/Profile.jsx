@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { fetchData } from "../services/apiService";
+import { fetchData as fetchMembers } from "../services/memberService.js";
+import {
+  fetchData as fetchUsers,
+  postData as postUser,
+} from "../services/userService.js";
 import {
   ProfileTitle,
   ProfileHeading,
@@ -35,7 +39,7 @@ export default function Profile() {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await fetchData("getProfile", username);
+        const response = await fetchUsers(username);
         if (response) {
           setData((prevData) => [...prevData, response]);
         }
@@ -79,7 +83,7 @@ export default function Profile() {
           ? e.target.elements["password"].placeholder
           : e.target.elements["password"].value,
     };
-    await fetchData("updateUser", JSON.stringify(data));
+    await postUser(data);
   }
 
   // Changes member instructions and add/removes membership list
@@ -92,8 +96,7 @@ export default function Profile() {
     } else {
       setViewMembership(true);
       try {
-        const response = await fetchData("getUserMemberships", username);
-
+        const response = await fetchMembers(username);
         if (response) {
           var data = [],
             dataLength = 0;
