@@ -1,6 +1,5 @@
-// using System.ComponentModel.DataAnnotations; // Used to delcare Date types
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DotNet.Models;
 
@@ -11,6 +10,7 @@ public class PoolMember
 
     // Navigation property
     [ForeignKey("UsernameFK")]
+    [JsonIgnore]
     public UserProfile? UserProfile { get; set; }
 
     // Foreign key
@@ -18,6 +18,7 @@ public class PoolMember
 
     // Navigation property
     [ForeignKey("PoolNameFK")]
+    [JsonIgnore]
     public Pool? Pool { get; set; }
 
     public int? Rank { get; set; }

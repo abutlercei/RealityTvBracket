@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.Data.Sqlite;
 using DotNet.Models;
+using System.Text.Json;
 
 // Will be split into separate controllers within resolved pull request!
 // Kept to see class definitions for transfer
@@ -11,8 +12,8 @@ namespace DotNet.Controllers
     [Route("api/[controller]")]
     public class DataController : ControllerBase
     {
-        private readonly DataRepository _repository;
-        public DataController(DataRepository repository)
+        private readonly IDataRepository _repository;
+        public DataController(IDataRepository repository)
         {
             _repository = repository;
         }
@@ -28,7 +29,7 @@ namespace DotNet.Controllers
                     UpdateUser(searchValue);
                     return Ok();
                 case "getUserMemberships":
-                    return Ok(GetUserMemberships(searchValue));
+                    return GetUserMemberships(searchValue);
                 default:
                     break;
             }
@@ -43,54 +44,17 @@ namespace DotNet.Controllers
 
         private void UpdateUser(string user)
         {
-            // String[] updateArr = user.Split('/');
-            // for (int i = 0; i < updateArr.Length; i += 3)
-            // {
-            //     using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
-            //     {
-            //         connection.Open();
-
-            //         var command = connection.CreateCommand();
-            //         command.CommandText =
-            //         @$"UPDATE UserProfile SET {updateArr[i]} = '{updateArr[i + 1]}' 
-            //         WHERE username = '{updateArr[i + 2]}' OR username = '{updateArr[i + 1]}';";
-            //         command.ExecuteNonQuery();
-
-            //         connection.Close();
-            //     }
-            // }
+            // Use HttpPost with [FromBody] UserProfile prof to receive data from json
+            // For now, user is json that will be parsed from body
+            UserProfile? userJson = JsonConvert.DeserializeObject<UserProfile>(user);
+#pragma warning disable CS8604 // Possible null reference argument.
+            _repository.UpdateUserProfile(userJson);
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        private string GetUserMemberships(String username)
+        private IActionResult GetUserMemberships(String username)
         {
-            List<PoolMember> poolObj = [];
-            // using (var connection = new SqliteConnection($"Data Source=sample_pools.db"))
-            // {
-            //     connection.Open();
-
-            //     var command = connection.CreateCommand();
-            //     command.CommandText = @$"SELECT pool_name AS 'Name', contestant as 'Contestant', rank_num as 'Rank', 
-            //         points as 'Points' FROM PoolMembers WHERE username = '{username}' ORDER BY pool_name;";
-
-            //     using (var reader = command.ExecuteReader())
-            //     {
-            //         while (reader.Read())
-            //         {
-            //             PoolMember pool = new()
-            //             {
-            //                 Username = username,
-            //                 PoolName = reader.GetString(0),
-            //                 Contestant = reader.GetString(1),
-            //                 Rank = reader.GetInt32(2),
-            //                 Points = reader.GetInt32(3),
-            //             };
-            //             poolObj.Add(pool);
-            //         }
-            //     }
-
-            //     connection.Close();
-            // }
-            return JsonConvert.SerializeObject(poolObj);
+            return _repository.GetPoolMembershipsForUser(username);
         }
 
         // Call within Home component

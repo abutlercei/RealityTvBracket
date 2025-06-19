@@ -1,4 +1,3 @@
-import { createRoot } from "react-dom/client";
 import { useState, useEffect } from "react";
 import { fetchData } from "../services/apiService";
 import {
@@ -53,7 +52,7 @@ export default function Profile() {
       const formElements = document.getElementsByClassName("userData");
       Array.from(formElements).forEach((element) => {
         if (element.placeholder === "") {
-          if (element.id === "Password") {
+          if (element.id === "password") {
             element.placeholder = "*".repeat(data["0"]["password"].length); // Repeats password symbol for length of password
           } else {
             element.placeholder = data["0"][element.id];
@@ -65,27 +64,22 @@ export default function Profile() {
 
   // Adding updated elements to database upon user submission
   async function handleFormSubmission(e) {
-    var dbValues = "";
-    Array.from(e.target.elements).forEach((element) => {
-      if (
-        element.value.length > 0 &&
-        element.value !== data[0]["0"][element.id]
-      ) {
-        // Change split character
-        dbValues += `${element.id}/${element.value}/${data[0]["0"]["Username"]}/`;
-        setData((prevArr) => {
-          var modifiedValue = prevArr;
-          modifiedValue[0]["0"][element.id] = element.value;
-          return modifiedValue;
-        });
-      }
-    });
-    if (dbValues.length > 0) {
-      const response = await fetchData(
-        "updateUser",
-        dbValues.substring(0, dbValues.length - 1)
-      );
-    }
+    // Will eventually be a UserProfile object in json in POST request body
+    let data = {
+      Name:
+        e.target.elements["name"].value === ""
+          ? e.target.elements["name"].placeholder
+          : e.target.elements["name"].value,
+      Username:
+        e.target.elements["username"].value === ""
+          ? e.target.elements["username"].placeholder
+          : e.target.elements["username"].value,
+      Password:
+        e.target.elements["password"].value === ""
+          ? e.target.elements["password"].placeholder
+          : e.target.elements["password"].value,
+    };
+    await fetchData("updateUser", JSON.stringify(data));
   }
 
   // Changes member instructions and add/removes membership list
@@ -99,9 +93,26 @@ export default function Profile() {
       setViewMembership(true);
       try {
         const response = await fetchData("getUserMemberships", username);
+
         if (response) {
-          console.log(response);
-          setTable(response);
+          var data = [],
+            dataLength = 0;
+          response.forEach((obj) => {
+            if (obj["usernameFK"] !== undefined) {
+              const dataRow = {
+                Name: obj["usernameFK"],
+                Contestant: obj["contestant"],
+                Rank: obj["rank"],
+                Points: obj["points"],
+              };
+              data.push(dataRow);
+            } else {
+              data[dataLength]["Name"] = obj["name"];
+              dataLength++;
+            }
+          });
+
+          setTable(data);
           setMembershipFound(true);
         }
       } catch (err) {
@@ -131,6 +142,8 @@ export default function Profile() {
                 Name: <Input type="text" id="name" className="userData" />
               </label>
               <label>
+                {" "}
+                {/* Switch to unchangable field */}
                 Username:
                 <Input type="text" id="username" className="userData" />
               </label>

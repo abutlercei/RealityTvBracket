@@ -1,9 +1,5 @@
-
-using DotNet.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 
 public class SamplePoolDbContextFactory : IDesignTimeDbContextFactory<SamplePoolDBContext>
 {

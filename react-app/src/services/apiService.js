@@ -9,5 +9,8 @@ export async function fetchData(queryType, searchValue) {
     throw new Error("Failed to fetch items");
   }
 
+  if (queryType === "updateUser") {
+    return;
+  }
   return response.json();
 }

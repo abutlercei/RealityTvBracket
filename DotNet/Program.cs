@@ -24,7 +24,7 @@ builder.Services.AddDbContext<SamplePoolDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register DataRepository service for database interactions
-builder.Services.AddScoped<DataRepository, Repository>();
+builder.Services.AddScoped<IDataRepository, Repository>();
 
 var app = builder.Build();
 

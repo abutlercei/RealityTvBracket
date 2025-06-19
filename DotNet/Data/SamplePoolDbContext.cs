@@ -140,7 +140,6 @@ public class SamplePoolDBContext : DbContext
             new PoolMember { UsernameFK = "jjayden", PoolNameFK = 3, Rank = 16, Points = 0, Contestant = "Diane" }
         );
 
-        // Connect current methods within DataRepository interface & DataController
         // Transfer to individual controllers & fix GET/POST requests
         // Move to frontend fixes
     }
