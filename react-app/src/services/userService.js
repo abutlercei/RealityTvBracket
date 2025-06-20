@@ -11,7 +11,7 @@ export async function fetchData(id) {
 export async function postData(userData) {
   try {
     const response = await fetch(`${API_URL}/update`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },

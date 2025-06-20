@@ -19,7 +19,7 @@ namespace DotNet.Controllers
             return _repository.GetUserProfile(id);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult UpdateUser([FromBody] UserProfile prof)
         {
             if (prof == null)
