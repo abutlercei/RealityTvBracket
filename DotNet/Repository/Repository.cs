@@ -62,7 +62,7 @@ public class Repository : IDataRepository
             Dictionary<String, object> updated = [];
             if (profile.Name != user.Name)
             {
-                updated.Add("Name", profile.Username);
+                updated.Add("Name", profile.Name);
             }
             if (profile.Password != user.Password)
             {

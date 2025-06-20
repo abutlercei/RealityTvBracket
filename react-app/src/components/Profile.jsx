@@ -55,9 +55,12 @@ export default function Profile() {
     if (data.length > 0) {
       const formElements = document.getElementsByClassName("userData");
       Array.from(formElements).forEach((element) => {
-        if (element.placeholder === "") {
+        if (
+          element.placeholder === "" ||
+          element.placeholder !== data["0"][element.id]
+        ) {
           if (element.id === "password") {
-            element.placeholder = "*".repeat(data["0"]["password"].length); // Repeats password symbol for length of password
+            element.value = data["0"]["password"];
           } else {
             element.placeholder = data["0"][element.id];
           }
@@ -68,7 +71,6 @@ export default function Profile() {
 
   // Adding updated elements to database upon user submission
   async function handleFormSubmission(e) {
-    // Will eventually be a UserProfile object in json in POST request body
     let data = {
       Name:
         e.target.elements["name"].value === ""
@@ -78,10 +80,7 @@ export default function Profile() {
         e.target.elements["username"].value === ""
           ? e.target.elements["username"].placeholder
           : e.target.elements["username"].value,
-      Password:
-        e.target.elements["password"].value === ""
-          ? e.target.elements["password"].placeholder
-          : e.target.elements["password"].value,
+      Password: e.target.elements["password"].value,
     };
     await postUser(data);
   }
@@ -142,13 +141,17 @@ export default function Profile() {
             <ProfileHeading>Edit Account Details</ProfileHeading>
             <UserForm onSubmit={handleFormSubmission}>
               <label>
-                Name: <Input type="text" id="name" className="userData" />
+                Username:
+                <Input
+                  type="text"
+                  id="username"
+                  className="userData"
+                  disabled="disabled"
+                  style={{ backgroundColor: "slategray" }}
+                />
               </label>
               <label>
-                {" "}
-                {/* Switch to unchangable field */}
-                Username:
-                <Input type="text" id="username" className="userData" />
+                Name: <Input type="text" id="name" className="userData" />
               </label>
               <label>
                 Password:
