@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchData } from "../services/apiService";
+import { fetchData } from "../services/poolService.js";
 import {
   faMagnifyingGlass,
   faUser,
@@ -28,7 +28,7 @@ export default function Search() {
   useEffect(() => {
     async function getPools() {
       try {
-        const response = await fetchData("getAllPools", "none");
+        const response = await fetchData(null);
         if (response) {
           Array.from(response).forEach((pool) => {
             if (!poolKeys.includes(pool.Name)) {
@@ -69,10 +69,7 @@ export default function Search() {
   // Event handler when user clicks on a single pool
   async function handleClickPoolCell(e) {
     try {
-      const response = await fetchData(
-        "getPoolInfo",
-        e.target.getAttribute("buttondata")
-      );
+      const response = await fetchData(e.target.getAttribute("buttondata"));
       if (response) {
         setPoolInfo(response);
       }
