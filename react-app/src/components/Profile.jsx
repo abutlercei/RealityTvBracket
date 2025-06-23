@@ -97,6 +97,7 @@ export default function Profile() {
       try {
         const response = await fetchMembers(username);
         if (response) {
+<<<<<<< HEAD
           var data = [],
             dataLength = 0;
           response.forEach((obj) => {
@@ -115,6 +116,9 @@ export default function Profile() {
           });
 
           setTable(data);
+=======
+          setTable(response);
+>>>>>>> search_tab
           setMembershipFound(true);
         }
       } catch (err) {
