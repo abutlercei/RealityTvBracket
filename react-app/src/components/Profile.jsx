@@ -1,9 +1,6 @@
+import { createRoot } from "react-dom/client";
 import { useState, useEffect } from "react";
-import { fetchData as fetchMembers } from "../services/memberService.js";
-import {
-  fetchData as fetchUsers,
-  postData as postUser,
-} from "../services/userService.js";
+import { fetchData } from "../services/apiService";
 import {
   ProfileTitle,
   ProfileHeading,
@@ -39,7 +36,7 @@ export default function Profile() {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await fetchUsers(username);
+        const response = await fetchData("getProfile", username);
         if (response) {
           setData((prevData) => [...prevData, response]);
         }
@@ -52,17 +49,14 @@ export default function Profile() {
 
   // Updating fields when data is populated or updated
   useEffect(() => {
-    if (data.length > 0) {
+    if (data.length > 0 && data[0].length > 0) {
       const formElements = document.getElementsByClassName("userData");
       Array.from(formElements).forEach((element) => {
-        if (
-          element.placeholder === "" ||
-          element.placeholder !== data["0"][element.id]
-        ) {
-          if (element.id === "password") {
-            element.value = data["0"]["password"];
+        if (element.placeholder === "") {
+          if (element.id === "Password") {
+            element.placeholder = "*".repeat(data[0]["0"]["Password"].length); // Repeats password symbol for length of password
           } else {
-            element.placeholder = data["0"][element.id];
+            element.placeholder = data[0]["0"][element.id];
           }
         }
       });
@@ -71,18 +65,27 @@ export default function Profile() {
 
   // Adding updated elements to database upon user submission
   async function handleFormSubmission(e) {
-    let data = {
-      Name:
-        e.target.elements["name"].value === ""
-          ? e.target.elements["name"].placeholder
-          : e.target.elements["name"].value,
-      Username:
-        e.target.elements["username"].value === ""
-          ? e.target.elements["username"].placeholder
-          : e.target.elements["username"].value,
-      Password: e.target.elements["password"].value,
-    };
-    await postUser(data);
+    var dbValues = "";
+    Array.from(e.target.elements).forEach((element) => {
+      if (
+        element.value.length > 0 &&
+        element.value !== data[0]["0"][element.id]
+      ) {
+        // Change split character
+        dbValues += `${element.id}/${element.value}/${data[0]["0"]["Username"]}/`;
+        setData((prevArr) => {
+          var modifiedValue = prevArr;
+          modifiedValue[0]["0"][element.id] = element.value;
+          return modifiedValue;
+        });
+      }
+    });
+    if (dbValues.length > 0) {
+      const response = await fetchData(
+        "updateUser",
+        dbValues.substring(0, dbValues.length - 1)
+      );
+    }
   }
 
   // Changes member instructions and add/removes membership list
@@ -95,30 +98,9 @@ export default function Profile() {
     } else {
       setViewMembership(true);
       try {
-        const response = await fetchMembers(username);
+        const response = await fetchData("getUserMemberships", username);
         if (response) {
-<<<<<<< HEAD
-          var data = [],
-            dataLength = 0;
-          response.forEach((obj) => {
-            if (obj["usernameFK"] !== undefined) {
-              const dataRow = {
-                Name: obj["usernameFK"],
-                Contestant: obj["contestant"],
-                Rank: obj["rank"],
-                Points: obj["points"],
-              };
-              data.push(dataRow);
-            } else {
-              data[dataLength]["Name"] = obj["name"];
-              dataLength++;
-            }
-          });
-
-          setTable(data);
-=======
           setTable(response);
->>>>>>> search_tab
           setMembershipFound(true);
         }
       } catch (err) {
@@ -134,7 +116,7 @@ export default function Profile() {
     <div>
       <div
         style={{
-          display: data.length > 0 ? "flex" : "none",
+          display: data.length > 0 && data[0].length > 0 ? "flex" : "none",
           flexDirection: "column",
           alignItems: "center",
         }}
@@ -145,21 +127,15 @@ export default function Profile() {
             <ProfileHeading>Edit Account Details</ProfileHeading>
             <UserForm onSubmit={handleFormSubmission}>
               <label>
-                Username:
-                <Input
-                  type="text"
-                  id="username"
-                  className="userData"
-                  disabled="disabled"
-                  style={{ backgroundColor: "slategray" }}
-                />
+                Name: <Input type="text" id="Name" className="userData" />
               </label>
               <label>
-                Name: <Input type="text" id="name" className="userData" />
+                Username:
+                <Input type="text" id="Username" className="userData" />
               </label>
               <label>
                 Password:
-                <Input type="password" id="password" className="userData" />
+                <Input type="password" id="Password" className="userData" />
               </label>
               <Button type="submit">Confirm Changes</Button>
             </UserForm>
@@ -186,7 +162,7 @@ export default function Profile() {
       </div>
       <div
         style={{
-          display: data.length > 0 ? "none" : "flex",
+          display: data.length > 0 && data[0].length > 0 ? "none" : "flex",
         }}
       >
         <ProfileTitle>

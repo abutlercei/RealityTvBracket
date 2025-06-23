@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,14 +15,6 @@ builder.Services.AddCors(options =>
         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
-
-// Register Database Context
-
-builder.Services.AddDbContext<SamplePoolDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Register DataRepository service for database interactions
-builder.Services.AddScoped<IDataRepository, Repository>();
 
 var app = builder.Build();
 
@@ -71,10 +61,10 @@ app.MapWhen(context => !context.Request.Path.StartsWithSegments("/api"), spa =>
     });
 });
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller=Home}/{action=Index}/{id?}")
+//     .WithStaticAssets();
 
 
 app.Run();
