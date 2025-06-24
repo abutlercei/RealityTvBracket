@@ -16,7 +16,12 @@ namespace DotNet.Controllers
         [HttpGet("{id}")]
         public IActionResult GetProfile(string id)
         {
-            return _repository.GetUserProfile(id);
+            UserProfile? result = _repository.GetUserProfile(id);
+            if (result == null)
+            {
+                return new BadRequestResult();
+            }
+            return new OkObjectResult(result);
         }
 
         [HttpPut("update")]

@@ -102,14 +102,15 @@ export default function Profile() {
           response.forEach((obj) => {
             if (obj["usernameFK"] !== undefined) {
               const dataRow = {
-                Name: obj["usernameFK"],
-                Contestant: obj["contestant"],
-                Rank: obj["rank"],
-                Points: obj["points"],
+                name: obj["usernameFK"], // Initially sets name key to host
+                contestant: obj["contestant"],
+                rank: obj["rank"],
+                points: obj["points"],
               };
               data.push(dataRow);
             } else {
-              data[dataLength]["Name"] = obj["name"];
+              // Replaces set name key with Pool Name
+              data[dataLength]["name"] = obj["name"];
               dataLength++;
             }
           });

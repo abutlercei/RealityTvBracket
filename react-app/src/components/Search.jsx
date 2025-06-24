@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { fetchData } from "../services/poolService.js";
+import {
+  fetchData,
+  fetchAllData as fetchAllPools,
+} from "../services/poolService.js";
 import {
   faMagnifyingGlass,
   faUser,
@@ -28,39 +31,40 @@ export default function Search() {
   useEffect(() => {
     async function getPools() {
       try {
-        const response = await fetchData(null);
+        const response = await fetchAllPools();
         if (response) {
           Array.from(response).forEach((pool) => {
-            if (!poolKeys.includes(pool.Name)) {
+            if (!poolKeys.includes(pool.id)) {
               setPools((prevPools) => [
                 ...prevPools,
                 <PoolItem
-                  key={pool.Name}
+                  key={pool.id}
                   onClick={handleClickPoolCell}
-                  buttondata={pool.Name}
+                  buttondata={pool.id}
                 >
-                  <h2 style={{ color: "hotpink" }} buttondata={pool.Name}>
-                    {pool.Name}
+                  <h2 style={{ color: "hotpink" }} buttondata={pool.id}>
+                    {pool.name}
                   </h2>
-                  <PoolItemContent buttondata={pool.Name}>
+                  <PoolItemContent buttondata={pool.id}>
                     <PoolIconInfo>
                       <ItemIcon icon={faPhotoFilm} />
-                      <h3 buttondata={pool.Name}>{pool.SourceName}</h3>
+                      <h3 buttondata={pool.id}>{pool.sourceName}</h3>
                     </PoolIconInfo>
                     <PoolIconInfo>
                       <ItemIcon icon={faUser} />
-                      <h3 buttondata={pool.Name}>{pool.Host}</h3>
+                      <h3 buttondata={pool.id}>{pool.hostFK}</h3>
                     </PoolIconInfo>
                   </PoolItemContent>
                 </PoolItem>,
               ]);
 
-              setPoolKeys((prevKeys) => [...prevKeys, pool.Name]);
+              setPoolKeys((prevKeys) => [...prevKeys, pool.id]);
             }
           });
         }
       } catch {
         console.error("Pools failed to load");
+        setSinglePoolView(false);
       }
     }
     getPools();
@@ -70,13 +74,11 @@ export default function Search() {
   async function handleClickPoolCell(e) {
     try {
       const response = await fetchData(e.target.getAttribute("buttondata"));
-      if (response) {
-        setPoolInfo(response);
-      }
+      console.log(response);
+      setPoolInfo(response);
     } catch {
       console.error("Unable to retrieve pool data.");
     }
-
     setSinglePoolView(true);
   }
 

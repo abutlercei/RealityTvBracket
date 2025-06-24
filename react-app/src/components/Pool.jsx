@@ -39,13 +39,13 @@ export default function Pool(props) {
   return (
     <PageContainer>
       <BackArrow icon={faArrowLeft} onClick={props.onClick} />
-      <PoolName>{props.data["0"]["Pool"]}</PoolName>
+      <PoolName>{props.data["name"]}</PoolName>
       <PageContent>
         <ContentBox style={infoBackgroundColor}>
           <PoolSource>
             Pool from{" "}
-            <PageLink href={props.data["0"]["SourceLink"]} target="_blank">
-              {props.data["0"]["SourceName"]}
+            <PageLink href={props.data["sourceLink"]} target="_blank">
+              {props.data["sourceName"]}
             </PageLink>
           </PoolSource>
           <PoolHost>
@@ -54,12 +54,12 @@ export default function Pool(props) {
               onMouseEnter={() => setHostHightlighted(true)}
               onMouseLeave={() => setHostHightlighted(false)}
             >
-              {props.data["0"]["Host"]}
+              {props.data["hostFK"]}
               <FontAwesomeIcon icon={faHighlighter} />
             </PageLink>
           </PoolHost>
-          <PoolBio>{props.data["0"]["Bio"]}</PoolBio>
-          {props.data["0"]["Host"] === "abutler" ? (
+          <PoolBio>{props.data["bio"]}</PoolBio>
+          {props.data["hostFK"] === "abutler" ? (
             <JoinedDiv disabled="disabled">
               Joined
               <FontAwesomeIcon style={{ marginLeft: "1rem" }} icon={faCheck} />

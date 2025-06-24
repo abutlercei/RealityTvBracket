@@ -8,11 +8,12 @@ import {
 
 export default function PoolTable(props) {
   const [tableHost, setTableHost] = useState();
-  const [initialRowColor, setInitialRowColor] = useState(); // Preserves initial row state
+  // Preserves initial row state when host row is highlighted
+  const [initialRowColor, setInitialRowColor] = useState();
 
   // Setting tableHost state on table rendering
   useEffect(() => {
-    setTableHost(props.tableData[0]["Host"]);
+    setTableHost(props.tableData["hostFK"]);
   }, []);
 
   // Changing background (highlighting) host row when highlight state changes
@@ -46,22 +47,22 @@ export default function PoolTable(props) {
           index % 2 !== 0 ? (
             <tr
               key={index}
-              className={row.Username === tableHost ? "tableHost" : ""}
+              className={row.username === tableHost ? "tableHost" : ""}
             >
-              <TableCell>{row.Name}</TableCell>
-              <TableCell>{row.Contestant}</TableCell>
-              <TableCell>{row.Rank}</TableCell>
-              <TableCell>{row.Points}</TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.contestant}</TableCell>
+              <TableCell>{row.rank}</TableCell>
+              <TableCell>{row.points}</TableCell>
             </tr>
           ) : (
             <AlternateRow
               key={index}
-              className={row.Username === tableHost ? "tableHost" : ""}
+              className={row.username === tableHost ? "tableHost" : ""}
             >
-              <TableCell>{row.Name}</TableCell>
-              <TableCell>{row.Contestant}</TableCell>
-              <TableCell>{row.Rank}</TableCell>
-              <TableCell>{row.Points}</TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.contestant}</TableCell>
+              <TableCell>{row.rank}</TableCell>
+              <TableCell>{row.points}</TableCell>
             </AlternateRow>
           )
         )}
