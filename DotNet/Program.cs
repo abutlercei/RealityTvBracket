@@ -1,3 +1,4 @@
+using DotNet.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,8 @@ builder.Services.AddDbContext<SamplePoolDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register DataRepository service for database interactions
-builder.Services.AddScoped<IDataRepository, Repository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPoolRepository, PoolRepository>();
 
 var app = builder.Build();
 

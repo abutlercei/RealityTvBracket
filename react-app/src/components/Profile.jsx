@@ -57,7 +57,8 @@ export default function Profile() {
       Array.from(formElements).forEach((element) => {
         if (
           element.placeholder === "" ||
-          element.placeholder !== data["0"][element.id]
+          element.placeholder !== data["0"][element.id] ||
+          element.value !== data["0"]["password"]
         ) {
           if (element.id === "password") {
             element.value = data["0"]["password"];
@@ -97,7 +98,6 @@ export default function Profile() {
       try {
         const response = await fetchMembers(username);
         if (response) {
-          console.log(response);
           let data = [];
           response.forEach((viewModel) => {
             data.push(viewModel);

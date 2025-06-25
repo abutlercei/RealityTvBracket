@@ -7,8 +7,8 @@ namespace DotNet.Controllers
     [Route("api/[controller]")]
     public class UserProfileController : ControllerBase
     {
-        private readonly IDataRepository _repository;
-        public UserProfileController(IDataRepository repository)
+        private readonly IUserRepository _repository;
+        public UserProfileController(IUserRepository repository)
         {
             _repository = repository;
         }

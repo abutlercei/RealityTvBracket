@@ -7,8 +7,8 @@ namespace DotNet.Controllers
     [Route("api/[controller]")]
     public class PoolMemberController : ControllerBase
     {
-        private readonly IDataRepository _repository;
-        public PoolMemberController(IDataRepository repository)
+        private readonly IPoolRepository _repository;
+        public PoolMemberController(IPoolRepository repository)
         {
             _repository = repository;
         }
