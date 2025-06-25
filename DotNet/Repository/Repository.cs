@@ -1,4 +1,5 @@
 using DotNet.Models;
+using DotNet.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,30 @@ public class Repository : IDataRepository
         _context = context;
     }
 
+    public List<MemberTableViewModel> GetAllMemberships(String username)
+    {
+        List<MemberTableViewModel> result = [];
+        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.UsernameFK == username).ToList();
+
+        foreach (PoolMember mem in mems)
+        {
+            Pool? pool = GetPool(mem.PoolNameFK);
+            if (pool != null)
+            {
+                result.Add(
+                    new MemberTableViewModel
+                    {
+                        Name = pool.Name,
+                        Contestant = mem.Contestant,
+                        Rank = mem.Rank,
+                        Points = mem.Points
+                    }
+                );
+            }
+        }
+        return result;
+    }
+
     public List<Pool> GetAllPools()
     {
         List<Pool> pools = _context.Pools.OrderBy(p => p.SourceName).ToList();
@@ -23,7 +48,6 @@ public class Repository : IDataRepository
         return _context.Pools.Find(id);
     }
 
-    // Refactor by replacing second object return with changing Pool to actual Pool object
     public IActionResult GetPoolMembershipsForUser(String username)
     {
         IActionResult result = new BadRequestResult();

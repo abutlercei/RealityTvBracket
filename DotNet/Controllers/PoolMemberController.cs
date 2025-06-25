@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using DotNet.Models.ViewModels;
 
 namespace DotNet.Controllers
 {
@@ -15,7 +16,7 @@ namespace DotNet.Controllers
         [HttpGet("{id}")]
         public IActionResult GetProfile(string id)
         {
-            return _repository.GetPoolMembershipsForUser(id);
+            return new OkObjectResult(_repository.GetAllMemberships(id));
         }
     }
 }

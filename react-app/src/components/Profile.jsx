@@ -97,22 +97,10 @@ export default function Profile() {
       try {
         const response = await fetchMembers(username);
         if (response) {
-          var data = [],
-            dataLength = 0;
-          response.forEach((obj) => {
-            if (obj["usernameFK"] !== undefined) {
-              const dataRow = {
-                name: obj["usernameFK"], // Initially sets name key to host
-                contestant: obj["contestant"],
-                rank: obj["rank"],
-                points: obj["points"],
-              };
-              data.push(dataRow);
-            } else {
-              // Replaces set name key with Pool Name
-              data[dataLength]["name"] = obj["name"];
-              dataLength++;
-            }
+          console.log(response);
+          let data = [];
+          response.forEach((viewModel) => {
+            data.push(viewModel);
           });
 
           setTable(data);
