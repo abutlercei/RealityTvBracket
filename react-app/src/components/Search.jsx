@@ -74,7 +74,6 @@ export default function Search() {
   async function handleClickPoolCell(e) {
     try {
       const response = await fetchData(e.target.getAttribute("buttondata"));
-      console.log(response);
       setPoolInfo(response);
     } catch {
       console.error("Unable to retrieve pool data.");

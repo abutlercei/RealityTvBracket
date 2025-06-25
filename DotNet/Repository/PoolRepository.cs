@@ -36,7 +36,7 @@ public class PoolRepository : IPoolRepository
     public List<MemberTableViewModel> GetAllMemberships(int id)
     {
         List<MemberTableViewModel> result = [];
-        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).ToList();
+        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank).ToList();
 
         foreach (PoolMember mem in mems)
         {
@@ -46,6 +46,7 @@ public class PoolRepository : IPoolRepository
                 result.Add(
                     new MemberTableViewModel
                     {
+                        Name = mem.UsernameFK,
                         UserPreferredName = prof.Name,
                         Contestant = mem.Contestant,
                         Rank = mem.Rank,

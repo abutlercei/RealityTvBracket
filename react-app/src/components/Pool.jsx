@@ -78,6 +78,7 @@ export default function Pool(props) {
           <PoolSource>Leaderboard</PoolSource>
           <PoolTable
             tableData={props.data["memberTables"]}
+            username={props.data["pool"]["hostFK"]}
             highlightState={hostHightlighted}
           />
         </ContentBox>

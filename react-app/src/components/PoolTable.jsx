@@ -13,7 +13,7 @@ export default function PoolTable(props) {
 
   // Setting tableHost state on table rendering
   useEffect(() => {
-    setTableHost(props.tableData["hostFK"]);
+    setTableHost(props.username);
   }, []);
 
   // Changing background (highlighting) host row when highlight state changes
@@ -47,10 +47,12 @@ export default function PoolTable(props) {
           index % 2 !== 0 ? (
             <tr
               key={index}
-              className={row.username === tableHost ? "tableHost" : ""}
+              className={row.name === tableHost ? "tableHost" : ""}
             >
               <TableCell>
-                {row.name === null ? row.userPreferredName : row.name}
+                {row.userPreferredName === null
+                  ? row.name
+                  : row.userPreferredName}
               </TableCell>
               <TableCell>{row.contestant}</TableCell>
               <TableCell>{row.rank}</TableCell>
@@ -59,10 +61,12 @@ export default function PoolTable(props) {
           ) : (
             <AlternateRow
               key={index}
-              className={row.username === tableHost ? "tableHost" : ""}
+              className={row.name === tableHost ? "tableHost" : ""}
             >
               <TableCell>
-                {row.name === null ? row.userPreferredName : row.name}
+                {row.userPreferredName === null
+                  ? row.name
+                  : row.userPreferredName}
               </TableCell>
               <TableCell>{row.contestant}</TableCell>
               <TableCell>{row.rank}</TableCell>
