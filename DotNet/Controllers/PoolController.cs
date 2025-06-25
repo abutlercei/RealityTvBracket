@@ -1,4 +1,5 @@
 using DotNet.Models;
+using DotNet.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet.Controllers
@@ -16,18 +17,23 @@ namespace DotNet.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            Pool? result = _repository.GetPool(id);
-            if (result == null)
+            Pool? pool = _repository.GetPool(id);
+            if (pool != null)
             {
-                return new BadRequestResult();
+                List<MemberTableViewModel> memTable = _repository.GetAllMemberships(pool.Id);
+                return new OkObjectResult(new SinglePoolViewModel
+                {
+                    Pool = pool,
+                    MemberTables = memTable
+                });
             }
-            return new OkObjectResult(result);
+            return new BadRequestResult();
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            List<Pool> result = _repository.GetAllPools();
+            List<PoolSearchResultViewModel> result = _repository.GetAllPools();
             if (result.Count == 0)
             {
                 return new BadRequestResult();

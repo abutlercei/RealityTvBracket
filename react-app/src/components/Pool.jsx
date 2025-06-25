@@ -39,13 +39,13 @@ export default function Pool(props) {
   return (
     <PageContainer>
       <BackArrow icon={faArrowLeft} onClick={props.onClick} />
-      <PoolName>{props.data["name"]}</PoolName>
+      <PoolName>{props.data["pool"]["name"]}</PoolName>
       <PageContent>
         <ContentBox style={infoBackgroundColor}>
           <PoolSource>
             Pool from{" "}
-            <PageLink href={props.data["sourceLink"]} target="_blank">
-              {props.data["sourceName"]}
+            <PageLink href={props.data["pool"]["sourceLink"]} target="_blank">
+              {props.data["pool"]["sourceName"]}
             </PageLink>
           </PoolSource>
           <PoolHost>
@@ -54,12 +54,12 @@ export default function Pool(props) {
               onMouseEnter={() => setHostHightlighted(true)}
               onMouseLeave={() => setHostHightlighted(false)}
             >
-              {props.data["hostFK"]}
+              {props.data["pool"]["hostFK"]}
               <FontAwesomeIcon icon={faHighlighter} />
             </PageLink>
           </PoolHost>
-          <PoolBio>{props.data["bio"]}</PoolBio>
-          {props.data["hostFK"] === "abutler" ? (
+          <PoolBio>{props.data["pool"]["bio"]}</PoolBio>
+          {props.data["pool"]["hostFK"] === "abutler" ? (
             <JoinedDiv disabled="disabled">
               Joined
               <FontAwesomeIcon style={{ marginLeft: "1rem" }} icon={faCheck} />
@@ -76,7 +76,10 @@ export default function Pool(props) {
         </ContentBox>
         <ContentBox>
           <PoolSource>Leaderboard</PoolSource>
-          <PoolTable tableData={props.data} highlightState={hostHightlighted} />
+          <PoolTable
+            tableData={props.data["memberTables"]}
+            highlightState={hostHightlighted}
+          />
         </ContentBox>
       </PageContent>
     </PageContainer>

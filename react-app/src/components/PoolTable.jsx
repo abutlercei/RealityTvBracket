@@ -49,7 +49,9 @@ export default function PoolTable(props) {
               key={index}
               className={row.username === tableHost ? "tableHost" : ""}
             >
-              <TableCell>{row.name}</TableCell>
+              <TableCell>
+                {row.name === null ? row.userPreferredName : row.name}
+              </TableCell>
               <TableCell>{row.contestant}</TableCell>
               <TableCell>{row.rank}</TableCell>
               <TableCell>{row.points}</TableCell>
@@ -59,7 +61,9 @@ export default function PoolTable(props) {
               key={index}
               className={row.username === tableHost ? "tableHost" : ""}
             >
-              <TableCell>{row.name}</TableCell>
+              <TableCell>
+                {row.name === null ? row.userPreferredName : row.name}
+              </TableCell>
               <TableCell>{row.contestant}</TableCell>
               <TableCell>{row.rank}</TableCell>
               <TableCell>{row.points}</TableCell>

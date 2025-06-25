@@ -34,31 +34,31 @@ export default function Search() {
         const response = await fetchAllPools();
         if (response) {
           Array.from(response).forEach((pool) => {
-            if (!poolKeys.includes(pool.id)) {
+            if (!poolKeys.includes(pool.poolId)) {
               setPools((prevPools) => [
                 ...prevPools,
                 <PoolItem
-                  key={pool.id}
+                  key={pool.poolId}
                   onClick={handleClickPoolCell}
-                  buttondata={pool.id}
+                  buttondata={pool.poolId}
                 >
-                  <h2 style={{ color: "hotpink" }} buttondata={pool.id}>
-                    {pool.name}
+                  <h2 style={{ color: "hotpink" }} buttondata={pool.poolId}>
+                    {pool.poolName}
                   </h2>
-                  <PoolItemContent buttondata={pool.id}>
+                  <PoolItemContent buttondata={pool.poolId}>
                     <PoolIconInfo>
                       <ItemIcon icon={faPhotoFilm} />
-                      <h3 buttondata={pool.id}>{pool.sourceName}</h3>
+                      <h3 buttondata={pool.poolId}>{pool.sourceName}</h3>
                     </PoolIconInfo>
                     <PoolIconInfo>
                       <ItemIcon icon={faUser} />
-                      <h3 buttondata={pool.id}>{pool.hostFK}</h3>
+                      <h3 buttondata={pool.poolId}>{pool.hostUsername}</h3>
                     </PoolIconInfo>
                   </PoolItemContent>
                 </PoolItem>,
               ]);
 
-              setPoolKeys((prevKeys) => [...prevKeys, pool.id]);
+              setPoolKeys((prevKeys) => [...prevKeys, pool.poolId]);
             }
           });
         }

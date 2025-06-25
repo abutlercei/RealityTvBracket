@@ -1,6 +1,5 @@
 using DotNet.Models;
 using DotNet.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
 
 public class PoolRepository : IPoolRepository
 {
@@ -34,10 +33,46 @@ public class PoolRepository : IPoolRepository
         return result;
     }
 
-    public List<Pool> GetAllPools()
+    public List<MemberTableViewModel> GetAllMemberships(int id)
     {
+        List<MemberTableViewModel> result = [];
+        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).ToList();
+
+        foreach (PoolMember mem in mems)
+        {
+            UserProfile? prof = _context.UserProfiles.Find(mem.UsernameFK);
+            if (prof != null)
+            {
+                result.Add(
+                    new MemberTableViewModel
+                    {
+                        UserPreferredName = prof.Name,
+                        Contestant = mem.Contestant,
+                        Rank = mem.Rank,
+                        Points = mem.Points
+                    }
+                );
+            }
+        }
+        return result;
+    }
+
+    public List<PoolSearchResultViewModel> GetAllPools()
+    {
+        List<PoolSearchResultViewModel> result = [];
         List<Pool> pools = _context.Pools.OrderBy(p => p.SourceName).ToList();
-        return pools;
+
+        foreach (Pool pool in pools)
+        {
+            result.Add(new PoolSearchResultViewModel
+            {
+                PoolId = pool.Id,
+                PoolName = pool.Name,
+                SourceName = pool.SourceName,
+                HostUsername = pool.HostFK
+            });
+        }
+        return result;
     }
 
     public Pool? GetPool(int id)
