@@ -5,41 +5,35 @@ using Microsoft.EntityFrameworkCore;
 public class Repository : IDataRepository
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    public Repository(IServiceScopeFactory scopeFactory)
+    private readonly SamplePoolDBContext _context;
+    public Repository(IServiceScopeFactory scopeFactory, SamplePoolDBContext context)
     {
         _scopeFactory = scopeFactory;
+        _context = context;
     }
 
     public List<Pool> GetAllPools()
     {
-        var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
-        List<Pool> pools = context.Pools
-        .OrderBy(p => p.SourceName)
-        .OrderBy(p => p.Name).ToList();
+        List<Pool> pools = _context.Pools.OrderBy(p => p.SourceName).ToList();
         return pools;
     }
 
     public Pool? GetPool(int id)
     {
-        var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
-        return context.Pools.Find(id);
+        return _context.Pools.Find(id);
     }
 
     // Refactor by replacing second object return with changing Pool to actual Pool object
     public IActionResult GetPoolMembershipsForUser(String username)
     {
         IActionResult result = new BadRequestResult();
-        var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
 
-        List<PoolMember> poolMems = context.PoolMembers.Where(pm => pm.UsernameFK == username).ToList();
+        List<PoolMember> poolMems = _context.PoolMembers.Where(pm => pm.UsernameFK == username).ToList();
         List<Object> returnObjs = [.. poolMems];
 
         foreach (PoolMember p in poolMems)
         {
-            Pool? pool = context.Pools.Find(p.PoolNameFK);
+            Pool? pool = _context.Pools.Find(p.PoolNameFK);
             if (pool != null)
             {
                 returnObjs.Add(pool);
@@ -52,9 +46,7 @@ public class Repository : IDataRepository
 
     public UserProfile? GetUserProfile(string username)
     {
-        var scope = _scopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
-        return context.UserProfiles.Find(username);
+        return _context.UserProfiles.Find(username);
     }
 
     public async void UpdateUserProfile(UserProfile profile)
