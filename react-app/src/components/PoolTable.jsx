@@ -20,15 +20,17 @@ export default function PoolTable(props) {
   useEffect(() => {
     var hostRowElement = document.getElementsByClassName("tableHost")[0];
 
-    if (props.highlightState) {
-      if (!initialRowColor) {
-        setInitialRowColor(hostRowElement.style.backgroundColor);
+    if (hostRowElement) {
+      if (props.highlightState) {
+        if (!initialRowColor) {
+          setInitialRowColor(hostRowElement.style.backgroundColor);
+        }
+        hostRowElement.style.backgroundColor = "hotpink";
+        hostRowElement.style.color = "white";
+      } else if (hostRowElement) {
+        hostRowElement.style.backgroundColor = initialRowColor;
+        hostRowElement.style.color = "#83c0c1";
       }
-      hostRowElement.style.backgroundColor = "hotpink";
-      hostRowElement.style.color = "white";
-    } else if (hostRowElement) {
-      hostRowElement.style.backgroundColor = initialRowColor;
-      hostRowElement.style.color = "#83c0c1";
     }
   }, [props.highlightState]);
 
