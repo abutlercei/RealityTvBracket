@@ -1,5 +1,13 @@
 // Styled components for Pool component
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+export const BackArrow = styled(FontAwesomeIcon)`
+  float: left;
+  font-size: 3rem;
+  align-self: flex-start;
+  margin: 2rem;
+`;
 
 export const PageContainer = styled.div`
   display: flex;
@@ -88,4 +96,10 @@ export const JoinButton = styled.button`
   border-radius: 5px;
   padding: 1rem;
   margin-top: 1rem;
+`;
+
+export const JoinedDiv = styled(JoinButton)`
+  background-color: #2e8b57;
+  color: white;
+  box-shadow: 2px 2px 1px white;
 `;

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   PageContainer,
   PoolName,
@@ -8,44 +9,78 @@ import {
   PageLink,
   PoolBio,
   JoinButton,
+  BackArrow,
+  JoinedDiv,
 } from "../styled/Pool";
 import PoolTable from "./PoolTable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faHighlighter,
+  faArrowPointer,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
-export default function Pool() {
+export default function Pool(props) {
+  const [hostHightlighted, setHostHightlighted] = useState(false);
+
   const infoBackgroundColor = {
     backgroundColor: "rgba(131, 192, 193, 0.51)",
     boxShadow: "3px 3px 2px #83c0c1",
   };
+
+  // Event handler to join a pool
+  function handleRequestToJoin(e) {
+    if (e.target.innerText === "Request to Join") {
+      // Add database call to Request to Join
+    }
+  }
+
   return (
     <PageContainer>
-      <PoolName>Lone Survivors (Pool Name)</PoolName>
+      <BackArrow icon={faArrowLeft} onClick={props.onClick} />
+      <PoolName>{props.data["pool"]["name"]}</PoolName>
       <PageContent>
         <ContentBox style={infoBackgroundColor}>
           <PoolSource>
             Pool from{" "}
-            <PageLink
-              href="https://en.wikipedia.org/wiki/Survivor:_Borneo"
-              target="_blank"
-            >
-              Survivor Season 1
+            <PageLink href={props.data["pool"]["sourceLink"]} target="_blank">
+              {props.data["pool"]["sourceName"]}
             </PageLink>
           </PoolSource>
           <PoolHost>
-            Host: <PageLink href="./profile">abutler</PageLink>
+            Host:{" "}
+            <PageLink
+              onMouseEnter={() => setHostHightlighted(true)}
+              onMouseLeave={() => setHostHightlighted(false)}
+            >
+              {props.data["pool"]["hostFK"]}
+              <FontAwesomeIcon icon={faHighlighter} />
+            </PageLink>
           </PoolHost>
-          <PoolBio>
-            Join this test league to see other features within the environment.
-            As Survivor Season 1 aired in 2000, this current league is closed
-            for actual participants. This pool shows a type where participants
-            gain points as their contestant stays in the competition. The other
-            type of pool allows players to guess when contestants get eliminated
-            similar to NCAA brackets.
-          </PoolBio>
-          <JoinButton>Request to Join</JoinButton>
+          <PoolBio>{props.data["pool"]["bio"]}</PoolBio>
+          {props.data["pool"]["hostFK"] === "abutler" ? (
+            <JoinedDiv disabled="disabled">
+              Joined
+              <FontAwesomeIcon style={{ marginLeft: "1rem" }} icon={faCheck} />
+            </JoinedDiv>
+          ) : (
+            <JoinButton onClick={handleRequestToJoin}>
+              Request to Join
+              <FontAwesomeIcon
+                style={{ marginLeft: "1rem" }}
+                icon={faArrowPointer}
+              />
+            </JoinButton>
+          )}
         </ContentBox>
         <ContentBox>
           <PoolSource>Leaderboard</PoolSource>
-          <PoolTable />
+          <PoolTable
+            tableData={props.data["memberTables"]}
+            username={props.data["pool"]["hostFK"]}
+            highlightState={hostHightlighted}
+          />
         </ContentBox>
       </PageContent>
     </PageContainer>

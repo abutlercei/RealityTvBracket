@@ -1,6 +1,6 @@
 // Styled components for Navigation Bar component
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const NavBar = styled.nav`
@@ -48,7 +48,7 @@ export const NavBarLinkList = styled.ul`
   gap: 2rem;
 `;
 
-export const NavBarLink = styled(Link)`
+export const NavBarLink = styled(NavLink)`
   &:link,
   &:visited {
     text-decoration: none;
@@ -94,7 +94,7 @@ export const NavBarDropdownBox = styled.div`
   }
 `;
 
-export const NavBarMobileLinks = styled(Link)`
+export const NavBarMobileLinks = styled(NavLink)`
   &:link,
   &:visited,
   &:active {
