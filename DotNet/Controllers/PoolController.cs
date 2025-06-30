@@ -20,7 +20,7 @@ namespace DotNet.Controllers
             Pool? pool = _repository.GetPool(id);
             if (pool != null)
             {
-                List<MemberTableViewModel> memTable = _repository.GetAllMemberships(pool.Id);
+                List<MemberTableViewModel> memTable = _repository.GetAllMemberships(pool.Id, pool.IsBracketStyle);
                 return new OkObjectResult(new SinglePoolViewModel
                 {
                     Pool = pool,

@@ -1,5 +1,7 @@
+using System.Runtime.Intrinsics.X86;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 public class PoolRepository : IPoolRepository
 {
@@ -33,29 +35,52 @@ public class PoolRepository : IPoolRepository
         return result;
     }
 
-    public List<MemberTableViewModel> GetAllMemberships(int id)
+    public List<MemberTableViewModel> GetAllMemberships(int id, bool isBracket)
     {
         List<MemberTableViewModel> result = [];
-        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank).ToList();
-
-        foreach (PoolMember mem in mems)
+        if (isBracket)
         {
-            UserProfile? prof = _context.UserProfiles.Find(mem.UsernameFK);
-            if (prof != null)
+            List<IGrouping<string, BracketMember>> mems = _context.BracketMembers
+                .Include(bm => bm.UserProfile).Where(bm => bm.PoolIdFK == id).GroupBy(bm => bm.UserFK).ToList();
+            List<MemberTableViewModel> rankings = mems.Select(memberRank => new MemberTableViewModel
             {
-                result.Add(
-                    new MemberTableViewModel
-                    {
-                        Name = mem.UsernameFK,
-                        UserPreferredName = prof.Name,
-                        Contestant = mem.Contestant,
-                        Rank = mem.Rank,
-                        Points = mem.Points
-                    }
-                );
+                Name = memberRank.Key,
+                Rank = mems.Count(bm2 => bm2.Sum(points => points.IsCorrect == true ? points.Points : 0) > memberRank.Sum(points => points.IsCorrect == true ? points.Points : 0)) + 1
+            }).ToList();
+
+            foreach (var grouping in mems)
+            {
+                result.Add(new MemberTableViewModel
+                {
+                    Name = grouping.Key,
+                    Contestant = $"{grouping.Count(count => count.IsCorrect == true)} / {grouping.Max(value => value.OrderOut)}",
+                    Points = grouping.Sum(value => value.IsCorrect == true ? value.Points : 0),
+                    Rank = rankings.FirstOrDefault(r => r.Name == grouping.Key).Rank
+                });
             }
         }
-        return result;
+        else
+        {
+            List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank).ToList();
+            foreach (PoolMember mem in mems)
+            {
+                UserProfile? prof = _context.UserProfiles.Find(mem.UsernameFK);
+                if (prof != null)
+                {
+                    result.Add(
+                        new MemberTableViewModel
+                        {
+                            Name = mem.UsernameFK,
+                            UserPreferredName = prof.Name,
+                            Contestant = mem.Contestant,
+                            Rank = mem.Rank,
+                            Points = mem.Points
+                        }
+                    );
+                }
+            }
+        }
+        return result.OrderBy(m => m.Rank).ToList();
     }
 
     public List<PoolSearchResultViewModel> GetAllPools()
