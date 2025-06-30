@@ -1,5 +1,6 @@
 using DotNet.Models;
 using DotNet.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 public class PoolRepository : IPoolRepository
 {
@@ -12,17 +13,16 @@ public class PoolRepository : IPoolRepository
     public List<MemberTableViewModel> GetAllMemberships(String username)
     {
         List<MemberTableViewModel> result = [];
-        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.UsernameFK == username).ToList();
+        List<PoolMember> mems = _context.PoolMembers.Include(pm => pm.Pool).Where(pm => pm.UsernameFK == username).ToList();
 
         foreach (PoolMember mem in mems)
         {
-            Pool? pool = GetPool(mem.PoolNameFK);
-            if (pool != null)
+            if (mem.Pool != null)
             {
                 result.Add(
                     new MemberTableViewModel
                     {
-                        Name = pool.Name,
+                        Name = mem.Pool.Name,
                         Contestant = mem.Contestant,
                         Rank = mem.Rank,
                         Points = mem.Points
@@ -36,18 +36,17 @@ public class PoolRepository : IPoolRepository
     public List<MemberTableViewModel> GetAllMemberships(int id)
     {
         List<MemberTableViewModel> result = [];
-        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank).ToList();
+        List<PoolMember> mems = _context.PoolMembers.Include(pm => pm.UserProfile).Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank).ToList();
 
         foreach (PoolMember mem in mems)
         {
-            UserProfile? prof = _context.UserProfiles.Find(mem.UsernameFK);
-            if (prof != null)
+            if (mem.UserProfile != null)
             {
                 result.Add(
                     new MemberTableViewModel
                     {
                         Name = mem.UsernameFK,
-                        UserPreferredName = prof.Name,
+                        UserPreferredName = mem.UserProfile.Name,
                         Contestant = mem.Contestant,
                         Rank = mem.Rank,
                         Points = mem.Points
