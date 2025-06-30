@@ -7,5 +7,7 @@ namespace DotNet.Models.ViewModels
         public string? Contestant { get; set; }
         public int? Rank { get; set; }
         public int? Points { get; set; }
+        public int? OrderOut { get; set; }
+        public Boolean? IsCorrect { get; set; }
     }
 }

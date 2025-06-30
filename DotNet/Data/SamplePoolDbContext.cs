@@ -13,6 +13,7 @@ public class SamplePoolDBContext : DbContext
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<Pool> Pools { get; set; }
     public DbSet<PoolMember> PoolMembers { get; set; }
+    public DbSet<BracketMember> BracketMembers { get; set; }
 
     // Uses onModelCreating to define composite key in PoolMember class
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,6 +38,21 @@ public class SamplePoolDBContext : DbContext
             .HasOne(pm => pm.Pool)
             .WithMany(p => p.Members)
             .HasForeignKey(pm => pm.PoolNameFK)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<BracketMember>()
+            .HasKey(table => new { table.UserFK, table.PoolIdFK, table.OrderOut });
+
+        modelBuilder.Entity<BracketMember>()
+            .HasOne(b => b.UserProfile)
+            .WithMany(u => u.Brackets)
+            .HasForeignKey(b => b.UserFK)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<BracketMember>()
+            .HasOne(b => b.Pool)
+            .WithMany(p => p.Brackets)
+            .HasForeignKey(b => b.PoolIdFK)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

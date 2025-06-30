@@ -96,6 +96,7 @@ export const JoinButton = styled.button`
   border-radius: 5px;
   padding: 1rem;
   margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 export const JoinedDiv = styled(JoinButton)`

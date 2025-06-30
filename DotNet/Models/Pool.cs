@@ -18,7 +18,10 @@ namespace DotNet.Models
         public required string HostFK { get; set; }
         public string? Bio { get; set; }
 
+        public required Boolean IsBracketStyle { get; set; }
+
         // Collection navigating dependent objects
         public ICollection<PoolMember> Members { get; } = []; // Navigation property
+        public ICollection<BracketMember> Brackets { get; } = []; // Navigation property
     }
 }

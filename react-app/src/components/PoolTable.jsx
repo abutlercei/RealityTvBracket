@@ -39,7 +39,9 @@ export default function PoolTable(props) {
       <TableHeader>
         <tr>
           <TableCell>Name</TableCell>
-          <TableCell>Contestant</TableCell>
+          <TableCell>
+            {props.isBracketStyle ? "Accuracy" : "Contestant"}
+          </TableCell>
           <TableCell>Rank</TableCell>
           <TableCell>Points</TableCell>
         </tr>

@@ -58,6 +58,12 @@ export default function Pool(props) {
               <FontAwesomeIcon icon={faHighlighter} />
             </PageLink>
           </PoolHost>
+          <PoolHost>
+            Pool Category:{" "}
+            {props.data["pool"]["isBracketStyle"]
+              ? "Bracket"
+              : "Single Contestant"}
+          </PoolHost>
           <PoolBio>{props.data["pool"]["bio"]}</PoolBio>
           {props.data["pool"]["hostFK"] === "abutler" ? (
             <JoinedDiv disabled="disabled">
@@ -79,6 +85,7 @@ export default function Pool(props) {
           <PoolTable
             tableData={props.data["memberTables"]}
             username={props.data["pool"]["hostFK"]}
+            isBracketStyle={props.data["pool"]["isBracketStyle"]}
             highlightState={hostHightlighted}
           />
         </ContentBox>
