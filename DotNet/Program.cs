@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuring AutoMapper Service
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSpaStaticFiles(configuration =>

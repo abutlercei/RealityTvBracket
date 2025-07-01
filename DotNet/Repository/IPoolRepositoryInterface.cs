@@ -3,8 +3,8 @@ using DotNet.Models.ViewModels;
 
 public interface IPoolRepository
 {
-    List<MemberTableViewModel> GetAllMemberships(String username);
-    List<MemberTableViewModel> GetAllMemberships(int id);
-    List<PoolSearchResultViewModel> GetAllPools();
+    Task<List<MemberTableViewModel>> GetAllMemberships(String username);
+    Task<List<MemberTableViewModel>> GetAllMemberships(int id);
+    Task<List<PoolSearchResultViewModel>> GetAllPools();
     Pool? GetPool(int id);
 }

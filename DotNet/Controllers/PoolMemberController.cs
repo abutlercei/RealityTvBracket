@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using DotNet.Models.ViewModels;
+using System.Threading.Tasks;
 
 namespace DotNet.Controllers
 {
@@ -14,9 +15,9 @@ namespace DotNet.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProfile(string id)
+        public async Task<IActionResult> GetProfile(string id)
         {
-            return new OkObjectResult(_repository.GetAllMemberships(id));
+            return new OkObjectResult(await _repository.GetAllMemberships(id));
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,12 @@ namespace DotNet.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             Pool? pool = _repository.GetPool(id);
             if (pool != null)
             {
-                List<MemberTableViewModel> memTable = _repository.GetAllMemberships(pool.Id);
+                List<MemberTableViewModel> memTable = await _repository.GetAllMemberships(pool.Id);
                 return new OkObjectResult(new SinglePoolViewModel
                 {
                     Pool = pool,
@@ -31,9 +32,9 @@ namespace DotNet.Controllers
         }
 
         [HttpGet("all")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            List<PoolSearchResultViewModel> result = _repository.GetAllPools();
+            List<PoolSearchResultViewModel> result = await _repository.GetAllPools();
             if (result.Count == 0)
             {
                 return new BadRequestResult();
