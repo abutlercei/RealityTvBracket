@@ -1,4 +1,5 @@
 using DotNet.Models;
+using DotNet.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +29,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<SamplePoolDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register DataRepository service for database interactions
+// Register repositories for database interactions
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPoolRepository, PoolRepository>();
+
+// Register services to call repositories
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+builder.Services.AddScoped<IPoolService, PoolService>();
 
 var app = builder.Build();
 
