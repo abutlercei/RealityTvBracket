@@ -83,7 +83,8 @@ export default function Profile() {
           : e.target.elements["username"].value,
       Password: e.target.elements["password"].value,
     };
-    await postUser(data);
+    const response = await postUser(data);
+    setData(data);
   }
 
   // Changes member instructions and add/removes membership list
