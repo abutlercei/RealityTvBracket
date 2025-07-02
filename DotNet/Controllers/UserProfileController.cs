@@ -19,7 +19,7 @@ namespace DotNet.Controllers
         {
             UserProfile? result = _service.GetUserProfile(id);
             return (result == null)
-                ? new BadRequestResult()
+                ? new StatusCodeResult(404) // Returning not found status code, called in login functionality
                 : new OkObjectResult(result);
         }
 

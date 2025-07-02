@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
 using DotNet.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet.Controllers
@@ -30,7 +31,7 @@ namespace DotNet.Controllers
         {
             List<PoolSearchResultViewModel> result = await _service.GetAllPools();
             return (result.Count == 0) ?
-                new BadRequestResult()
+                new StatusCodeResult(500) // Returns internal server error since database has pre-populated objs
                 : new OkObjectResult(result);
         }
     }
