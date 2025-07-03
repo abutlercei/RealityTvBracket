@@ -44,7 +44,13 @@ public class UserRepository : IUserRepository
                 entry.Property(field.Key).IsModified = true;
             }
         }
-
-        await context.SaveChangesAsync();
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Failed to run database updated. {e}");
+        }
     }
 }

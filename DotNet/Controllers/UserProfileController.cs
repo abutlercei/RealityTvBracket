@@ -1,4 +1,5 @@
 using DotNet.Models;
+using DotNet.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet.Controllers
@@ -7,33 +8,28 @@ namespace DotNet.Controllers
     [Route("api/[controller]")]
     public class UserProfileController : ControllerBase
     {
-        private readonly IUserRepository _repository;
-        public UserProfileController(IUserRepository repository)
+        private readonly IUserProfileService _service;
+        public UserProfileController(IUserProfileService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet("{id}")]
         public IActionResult GetProfile(string id)
         {
-            UserProfile? result = _repository.GetUserProfile(id);
-            if (result == null)
-            {
-                return new BadRequestResult();
-            }
-            return new OkObjectResult(result);
+            UserProfile? result = _service.GetUserProfile(id);
+            return (result == null)
+                ? new StatusCodeResult(404) // Returning not found status code, called in login functionality
+                : new OkObjectResult(result);
         }
 
         [HttpPut("update")]
         public IActionResult UpdateUser([FromBody] UserProfile prof)
         {
-            if (prof == null)
-            {
-                return new BadRequestResult();
-            }
-
-            _repository.UpdateUserProfile(prof);
-            return new OkResult();
+            bool success = _service.UpdateUserProfile(prof);
+            return (!success) ?
+                new BadRequestResult()
+                : new OkResult();
         }
     }
 }

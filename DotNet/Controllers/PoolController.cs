@@ -1,5 +1,8 @@
+using System.Threading.Tasks;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
+using DotNet.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet.Controllers
@@ -8,37 +11,28 @@ namespace DotNet.Controllers
     [Route("api/[controller]")]
     public class PoolController : ControllerBase
     {
-        private readonly IPoolRepository _repository;
-        public PoolController(IPoolRepository repository)
+        private readonly IPoolService _service;
+        public PoolController(IPoolService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            Pool? pool = _repository.GetPool(id);
-            if (pool != null)
-            {
-                List<MemberTableViewModel> memTable = _repository.GetAllMemberships(pool.Id, pool.IsBracketStyle);
-                return new OkObjectResult(new SinglePoolViewModel
-                {
-                    Pool = pool,
-                    MemberTables = memTable
-                });
-            }
-            return new BadRequestResult();
+            SinglePoolViewModel result = await _service.GetPoolView(id);
+            return (result.Pool == null) ?
+                new BadRequestResult()
+                : new OkObjectResult(result);
         }
 
         [HttpGet("all")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            List<PoolSearchResultViewModel> result = _repository.GetAllPools();
-            if (result.Count == 0)
-            {
-                return new BadRequestResult();
-            }
-            return new OkObjectResult(result);
+            List<PoolSearchResultViewModel> result = await _service.GetAllPools();
+            return (result.Count == 0) ?
+                new StatusCodeResult(500) // Returns internal server error since database has pre-populated objs
+                : new OkObjectResult(result);
         }
     }
 }

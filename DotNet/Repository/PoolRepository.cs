@@ -1,4 +1,5 @@
-using System.Runtime.Intrinsics.X86;
+using System.Threading.Tasks;
+using AutoMapper;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -6,33 +7,19 @@ using Microsoft.EntityFrameworkCore;
 public class PoolRepository : IPoolRepository
 {
     private readonly SamplePoolDBContext _context;
-    public PoolRepository(SamplePoolDBContext context)
+    private readonly IMapper _mapper;
+    public PoolRepository(SamplePoolDBContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public List<MemberTableViewModel> GetAllMemberships(String username)
+    public async Task<List<MemberTableViewModel>> GetAllMemberships(String username)
     {
-        List<MemberTableViewModel> result = [];
-        List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.UsernameFK == username).ToList();
-
-        foreach (PoolMember mem in mems)
-        {
-            Pool? pool = GetPool(mem.PoolNameFK);
-            if (pool != null)
-            {
-                result.Add(
-                    new MemberTableViewModel
-                    {
-                        Name = pool.Name,
-                        Contestant = mem.Contestant,
-                        Rank = mem.Rank,
-                        Points = mem.Points
-                    }
-                );
-            }
-        }
-        return result;
+        return await _mapper
+            .ProjectTo<MemberTableViewModel>
+                (_context.PoolMembers.Where(pm => pm.UsernameFK == username))
+            .ToListAsync();
     }
 
     public List<MemberTableViewModel> GetAllMemberships(int id, bool isBracket)
@@ -82,23 +69,17 @@ public class PoolRepository : IPoolRepository
         }
         return result.OrderBy(m => m.Rank).ToList();
     }
-
-    public List<PoolSearchResultViewModel> GetAllPools()
+    public async Task<List<MemberTableViewModel>> GetAllMemberships(int id)
     {
-        List<PoolSearchResultViewModel> result = [];
-        List<Pool> pools = _context.Pools.OrderBy(p => p.SourceName).ToList();
+        return await _mapper
+            .ProjectTo<MemberTableViewModel>
+                (_context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
+            .ToListAsync();
+    }
 
-        foreach (Pool pool in pools)
-        {
-            result.Add(new PoolSearchResultViewModel
-            {
-                PoolId = pool.Id,
-                PoolName = pool.Name,
-                SourceName = pool.SourceName,
-                HostUsername = pool.HostFK
-            });
-        }
-        return result;
+    public async Task<List<PoolSearchResultViewModel>> GetAllPools()
+    {
+        return await _mapper.ProjectTo<PoolSearchResultViewModel>(_context.Pools, null).ToListAsync();
     }
 
     public Pool? GetPool(int id)
