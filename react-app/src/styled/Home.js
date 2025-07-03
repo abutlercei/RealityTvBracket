@@ -5,6 +5,7 @@ export const PageContainer = styled.div`
   margin-left: 3rem;
   margin-right: 3rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
@@ -13,4 +14,12 @@ export const PageContainer = styled.div`
     margin-left: 1rem;
     margin-right: 1rem;
   }
+`;
+
+export const TableContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 `;

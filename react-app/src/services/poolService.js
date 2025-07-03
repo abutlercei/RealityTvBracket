@@ -8,6 +8,10 @@ export async function fetchData(id) {
   return response.json();
 }
 
+export async function fetchSummaryView(id) {
+  console.log(`Sending ${id} to fetch data.`);
+}
+
 export async function fetchAllData() {
   const response = await fetch(`${API_URL}/all`);
   if (!response.ok) {

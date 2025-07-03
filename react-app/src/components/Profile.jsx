@@ -33,7 +33,7 @@ export default function Profile() {
     boxShadow: "3px 3px 2px black",
   };
 
-  const username = "abutler";
+  const username = import.meta.env.VITE_USERNAME;
 
   // Fetching data on initial load to populate user data update fields
   useEffect(() => {
