@@ -9,7 +9,11 @@ export async function fetchData(id) {
 }
 
 export async function fetchSummaryView(id) {
-  console.log(`Sending ${id} to fetch data.`);
+  const response = await fetch(`${API_URL}/summary/${id}`);
+  if (!response.ok) {
+    throw new Error("Failed to find summary for user");
+  }
+  return response.json();
 }
 
 export async function fetchAllData() {

@@ -42,7 +42,7 @@ public class PoolRepository : IPoolRepository
                     Name = grouping.Key,
                     Contestant = $"{grouping.Count(count => count.IsCorrect == true)} / {grouping.Max(value => value.OrderOut)}",
                     Points = grouping.Sum(value => value.IsCorrect == true ? value.Points : 0),
-                    Rank = rankings.FirstOrDefault(r => r.Name == grouping.Key).Rank
+                    Rank = rankings.FirstOrDefault(r => r != null && r.Name == grouping.Key).Rank
                 });
             }
         }
@@ -80,6 +80,23 @@ public class PoolRepository : IPoolRepository
     public async Task<List<PoolSearchResultViewModel>> GetAllPools()
     {
         return await _mapper.ProjectTo<PoolSearchResultViewModel>(_context.Pools, null).ToListAsync();
+    }
+
+    public SummaryViewModel GetSummaryViewModel(string id)
+    {
+        try
+        {
+            SummaryViewModel summary = new SummaryViewModel();
+            List<Pool> pools = _context.Pools
+                .Include(p => p.Members).Include(p => p.Brackets)
+                .Where(p => p.Members.Any(m => m.UsernameFK == id)
+                || p.Brackets.Any(b => b.UserFK == id)).ToList();
+            return summary.MapToSummaryViewModel(pools, id);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failure to query and map summary.", e);
+        }
     }
 
     public Pool? GetPool(int id)

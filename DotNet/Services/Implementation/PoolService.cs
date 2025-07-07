@@ -12,10 +12,14 @@ namespace DotNet.Services
             _repository = repository;
         }
 
-        public async Task<SinglePoolViewModel> GetPoolView(int id)
+        public SinglePoolViewModel GetPoolView(int id)
         {
             Pool? pool = _repository.GetPool(id);
-            List<MemberTableViewModel> memTable = await _repository.GetAllMemberships(id);
+            if (pool == null)
+            {
+                return new SinglePoolViewModel();
+            }
+            List<MemberTableViewModel> memTable = _repository.GetAllMemberships(id, pool.IsBracketStyle);
             return new SinglePoolViewModel
             {
                 Pool = pool,
@@ -26,6 +30,11 @@ namespace DotNet.Services
         public async Task<List<PoolSearchResultViewModel>> GetAllPools()
         {
             return await _repository.GetAllPools();
+        }
+
+        public SummaryViewModel GetSummaryViewModel(string id)
+        {
+            return _repository.GetSummaryViewModel(id);
         }
     }
 }

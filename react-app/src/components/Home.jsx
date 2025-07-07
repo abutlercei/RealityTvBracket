@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PageContainer, TableContainer } from "../styled/Home";
 import {
   Table,
@@ -11,12 +11,14 @@ import { fetchSummaryView } from "../services/poolService";
 export default function Home() {
   const username = import.meta.env.VITE_USERNAME;
 
+  const [totals, setTotals] = useState({});
+
   useEffect(() => {
     async function getSummary() {
       try {
         const response = await fetchSummaryView(username);
         if (response) {
-          console.log(response);
+          setTotals(response);
         }
       } catch {
         console.error("Summary data failed to load");
@@ -40,17 +42,27 @@ export default function Home() {
               </TableCell>
             </tr>
             <tr>
-              <TableCell>Pool Name</TableCell>
+              <TableCell>PoolType</TableCell>
               <TableCell>Points</TableCell>
               <TableCell>Rank</TableCell>
             </tr>
           </TableHeader>
           <tbody>
-            {/* Totals Row */}
+            {/* Totals Rows */}
             <AlternateRow>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+              <TableCell>Single Contestant</TableCell>
+              <TableCell>{totals["singleContestantPoints"]}</TableCell>
+              <TableCell>
+                {new Intl.NumberFormat("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 2,
+                }).format(totals["singleContestantAverageRank"])}
+              </TableCell>
+            </AlternateRow>
+            <AlternateRow>
+              <TableCell>Bracket</TableCell>
+              <TableCell>{totals["bracketPoints"]}</TableCell>
+              <TableCell>{totals["bracketTotalAccuracy"]}</TableCell>
             </AlternateRow>
             {/* Individual Pools */}
           </tbody>
