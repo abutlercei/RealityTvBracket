@@ -23,3 +23,10 @@ export const TableContainer = styled.div`
   justify-content: center;
   width: 100%;
 `;
+
+export const SingleCellRow = styled.th`
+  padding: 0.5rem, 1rem;
+  text-align: center;
+  font-size: larger;
+  border: 1px solid #83c0c1;
+`;

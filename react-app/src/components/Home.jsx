@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PageContainer, TableContainer } from "../styled/Home";
+import { PageContainer, TableContainer, SingleCellRow } from "../styled/Home";
 import {
   Table,
   TableHeader,
@@ -11,7 +11,12 @@ import { fetchSummaryView } from "../services/poolService";
 export default function Home() {
   const username = import.meta.env.VITE_USERNAME;
 
-  const [totals, setTotals] = useState({});
+  const [totals, setTotals] = useState({
+    singleContestantPoints: 0,
+    singleContestantAverageRank: 0.0,
+    bracketPoints: 0,
+    bracketTotalAccuracy: "0 / 0",
+  });
 
   useEffect(() => {
     async function getSummary() {
@@ -34,15 +39,10 @@ export default function Home() {
         <Table>
           <TableHeader>
             <tr>
-              <TableCell
-                colSpan={3}
-                style={{ textAlign: "center", fontSize: "larger" }}
-              >
-                Totals
-              </TableCell>
+              <SingleCellRow colSpan={3}>Totals</SingleCellRow>
             </tr>
             <tr>
-              <TableCell>PoolType</TableCell>
+              <TableCell>Pool Type</TableCell>
               <TableCell>Points</TableCell>
               <TableCell>Rank</TableCell>
             </tr>
@@ -65,6 +65,9 @@ export default function Home() {
               <TableCell>{totals["bracketTotalAccuracy"]}</TableCell>
             </AlternateRow>
             {/* Individual Pools */}
+            <tr>
+              <SingleCellRow colSpan={3}>Pools</SingleCellRow>
+            </tr>
           </tbody>
         </Table>
       </TableContainer>
