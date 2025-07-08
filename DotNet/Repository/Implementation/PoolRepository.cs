@@ -90,7 +90,7 @@ public class PoolRepository : IPoolRepository
             List<Pool> pools = _context.Pools
                 .Include(p => p.Members).Include(p => p.Brackets)
                 .Where(p => p.Members.Any(m => m.UsernameFK == id)
-                || p.Brackets.Any(b => b.UserFK == id)).ToList();
+                || p.Brackets.Any(b => b.UserFK == id)).OrderBy(p => p.Id).ToList();
             return summary.MapToSummaryViewModel(pools, id);
         }
         catch (Exception e)

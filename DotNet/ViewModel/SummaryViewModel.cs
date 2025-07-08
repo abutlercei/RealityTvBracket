@@ -25,7 +25,7 @@ namespace DotNet.Models.ViewModels
 
                 BracketPoints = pools
                       .Where(p => p.IsBracketStyle)
-                      .Sum(p => p.Brackets.Sum(b => b.UserFK == username ? b.Points : 0)),
+                      .Sum(p => p.Brackets.Sum(b => b.UserFK == username && b.IsCorrect == true ? b.Points : 0)),
 
                 BracketTotalAccuracy = $"{pools
                       .Where(p => p.IsBracketStyle)
