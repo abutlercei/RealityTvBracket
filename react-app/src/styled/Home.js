@@ -8,6 +8,7 @@ export const PageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 3rem;
 
   // Media query for page container
   @media (max-width: 600px) {
@@ -18,10 +19,11 @@ export const PageContainer = styled.div`
 
 export const TableContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
+  gap: 3rem;
 `;
 
 export const SingleCellRow = styled.th`
