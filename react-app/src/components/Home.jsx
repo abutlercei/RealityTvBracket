@@ -50,75 +50,58 @@ export default function Home() {
 
   // Logic for effect updating summary values
   function updateSummaryValues() {
-    Array.from(totals["allPools"]).map((row) => {
+    totals["allPools"].forEach((row) => {
       if (row["isBracketStyle"]) {
-        let rowObj = {
-          allCorrect: 0,
-          allTotal: 0,
-          points: 0,
-        };
-        let userPoints = {};
-        Array.from(row["brackets"]).map((bracket) => {
-          // Ranking object
-          if (bracket["isCorrect"] === true) {
-            if (userPoints[bracket["userFK"]] == null) {
-              userPoints[bracket["userFK"]] = bracket["points"];
-            } else {
-              userPoints[bracket["userFK"]] += bracket["points"];
-            }
+        const rowObj = { allCorrect: 0, allTotal: 0, points: 0 };
+        const userPoints = {};
+
+        row["brackets"].forEach((bracket) => {
+          const { userFK, isCorrect, points, OrderOut } = bracket;
+
+          if (isCorrect) {
+            userPoints[userFK] = (userPoints[userFK] || 0) + points;
           }
 
-          // Individual user information
-          if (bracket["userFK"] === username) {
+          if (userFK === username) {
             rowObj.allTotal++;
-            if (bracket["isCorrect"] === true) {
+            if (isCorrect) {
               rowObj.allCorrect++;
-              rowObj.points += bracket["points"];
+              rowObj.points += points;
             }
           }
         });
-        // Ranking pool
+
         const sortedEntries = Object.entries(userPoints).sort(
-          ([, aPoints], [, bPoints]) => bPoints - aPoints
+          ([, a], [, b]) => b - a
         );
-        const sortedUserPoints = Object.fromEntries(sortedEntries);
-
         const userRanks = {};
-        let currentRank = 1;
-        let prevPoints = null;
-        let tieCount = 0;
+        let rank = 1;
 
-        for (let i = 0; i < sortedEntries.length; i++) {
-          const [user, points] = sortedEntries[i];
-
-          if (points === prevPoints) {
-            tieCount++;
+        sortedEntries.forEach(([user, points], index) => {
+          if (index > 0 && points === sortedEntries[index - 1][1]) {
+            userRanks[user] = userRanks[sortedEntries[index - 1][0]];
           } else {
-            currentRank += tieCount;
-            tieCount = 1;
+            userRanks[user] = rank;
           }
+          rank++;
+        });
 
-          userRanks[user] = currentRank;
-          prevPoints = points;
-        }
-
-        // Adds object after creating object
-        if (!Object.keys(bracketTables).includes(row.id)) {
+        if (!bracketTables[row.id]) {
           setBracketTables((prev) => ({
             ...prev,
             [row.id]: {
               name: row.name,
-              accuracy: `${rowObj["allCorrect"]} / ${rowObj["allTotal"]}`,
+              accuracy: `${rowObj.allCorrect} / ${rowObj.allTotal}`,
               rank: userRanks[username],
-              points: rowObj["points"],
+              points: rowObj.points,
             },
           }));
         }
       } else {
-        Array.from(row["members"]).map((member) => {
+        row["members"].forEach((member) => {
           if (member["usernameFK"] === username) {
             member["name"] = row["name"];
-            setMembers((prevState) => [...prevState, member]);
+            setMembers((prev) => [...prev, member]);
           }
         });
       }
