@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using AutoMapper;
 using DotNet.Models;
@@ -46,54 +47,32 @@ public class PoolRepository : IPoolRepository
         List<MemberTableViewModel> result = [];
         if (isBracket)
         {
-            List<IGrouping<string, BracketMember>> mems = _context.BracketMembers
-                .Include(bm => bm.UserProfile).Where(bm => bm.PoolIdFK == id).GroupBy(bm => bm.UserFK).ToList();
-            List<MemberTableViewModel> rankings = mems.Select(memberRank => new MemberTableViewModel
-            {
-                Name = memberRank.Key,
-                Rank = mems.Count(bm2 => bm2.Sum(points => points.IsCorrect == true ? points.Points : 0) > memberRank.Sum(points => points.IsCorrect == true ? points.Points : 0)) + 1
-            }).ToList();
-
-            foreach (var grouping in mems)
-            {
-                result.Add(new MemberTableViewModel
+            result = _context.BracketMembers
+                .Include(bm => bm.UserProfile)
+                .Where(bm => bm.PoolIdFK == id)
+                .GroupBy(bm => new { bm.UserFK, bm.UserProfile.Name })
+                .Select(g => new MemberTableViewModel
                 {
-                    Name = grouping.Key,
-                    Contestant = $"{grouping.Count(count => count.IsCorrect == true)} / {grouping.Max(value => value.OrderOut)}",
-                    Points = grouping.Sum(value => value.IsCorrect == true ? value.Points : 0),
-                    Rank = rankings.FirstOrDefault(r => r != null && r.Name == grouping.Key).Rank
-                });
-            }
+                    Name = g.Key.Name,
+                    Contestant = $"{g.Count(x => x.IsCorrect == true)} / {g.Max(x => x.OrderOut)}",
+                    Points = g.Sum(x => x.IsCorrect == true ? x.Points : 0)
+                })
+                .ToList()
+                .OrderByDescending(x => x.Points)
+                .Select((x, index) =>
+                {
+                    x.Rank = index + 1;
+                    return x;
+                })
+                .ToList();
         }
         else
         {
-            List<PoolMember> mems = _context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank).ToList();
-            foreach (PoolMember mem in mems)
-            {
-                UserProfile? prof = _context.UserProfiles.Find(mem.UsernameFK);
-                if (prof != null)
-                {
-                    result.Add(
-                        new MemberTableViewModel
-                        {
-                            Name = mem.UsernameFK,
-                            UserPreferredName = prof.Name,
-                            Contestant = mem.Contestant,
-                            Rank = mem.Rank,
-                            Points = mem.Points
-                        }
-                    );
-                }
-            }
+            result = _mapper.ProjectTo<MemberTableViewModel>
+                (_context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
+            .ToList();
         }
         return result.OrderBy(m => m.Rank).ToList();
-    }
-    public async Task<List<MemberTableViewModel>> GetAllMemberships(int id)
-    {
-        return await _mapper
-            .ProjectTo<MemberTableViewModel>
-                (_context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
-            .ToListAsync();
     }
 
     public async Task<List<PoolSearchResultViewModel>> GetAllPools()

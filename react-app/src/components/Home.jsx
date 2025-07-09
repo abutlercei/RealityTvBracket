@@ -45,6 +45,11 @@ export default function Home() {
   // Adding values to states displaying summary once totals is updated
   useEffect(() => {
     setMembers([]);
+    updateSummaryValues();
+  }, [totals]);
+
+  // Logic for effect updating summary values
+  function updateSummaryValues() {
     Array.from(totals["allPools"]).map((row) => {
       if (row["isBracketStyle"]) {
         let rowObj = {
@@ -118,7 +123,7 @@ export default function Home() {
         });
       }
     });
-  }, [totals]);
+  }
 
   // Event handler when user clicks on pool row
   async function handleClickPool(e) {
