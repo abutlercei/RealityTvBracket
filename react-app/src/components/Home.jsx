@@ -54,7 +54,6 @@ export default function Home() {
       if (row["isBracketStyle"]) {
         const rowObj = { allCorrect: 0, allTotal: 0, points: 0 };
         const userPoints = {};
-
         row["brackets"].forEach((bracket) => {
           const { userFK, isCorrect, points, OrderOut } = bracket;
 

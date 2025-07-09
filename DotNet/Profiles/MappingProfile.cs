@@ -16,8 +16,8 @@ public class MappingProfile : Profile
                     ? src.UserProfile.Username : string.Empty));
         CreateMap<PoolMember, MemberTableViewModel>()
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => src.Pool != null
-                    ? src.Pool.Name : string.Empty));
+                opt => opt.MapFrom(src => src.UserProfile != null
+                    ? src.UserProfile.Name : string.Empty));
         CreateMap<BracketMember, MemberTableViewModel>()
             .ForMember(dest => dest.Name,
                 opt => opt.MapFrom(src => src.Pool != null
