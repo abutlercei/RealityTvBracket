@@ -16,6 +16,14 @@ export async function fetchSummaryView(id) {
   return response.json();
 }
 
+export async function fetchSearchResults(input) {
+  const response = await fetch(`${API_URL}/search/${input}`);
+  if (!response.ok) {
+    throw new Error("Failed to find search results");
+  }
+  return response.json();
+}
+
 export async function fetchAllData() {
   const response = await fetch(`${API_URL}/all`);
   if (!response.ok) {

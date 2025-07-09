@@ -8,5 +8,6 @@ namespace DotNet.Services
         public Task<List<PoolSearchResultViewModel>> GetAllPools();
         public SinglePoolViewModel GetPoolView(int id);
         public SummaryViewModel GetSummaryViewModel(string id);
+        public List<PoolSearchResultViewModel> GetSearchResult(string input);
     }
 }

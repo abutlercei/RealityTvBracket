@@ -177,7 +177,7 @@ export default function Profile() {
               style={{ display: viewMembership ? "flex" : "none" }}
             >
               {membershipFound ? (
-                <div>
+                <div style={{ width: "100%" }}>
                   <h3 style={{ textAlign: "center" }}>
                     Single Contestant Pools
                   </h3>

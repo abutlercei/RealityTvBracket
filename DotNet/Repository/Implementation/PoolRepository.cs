@@ -48,8 +48,7 @@ public class PoolRepository : IPoolRepository
         if (isBracket)
         {
             result = _context.BracketMembers
-                .Include(bm => bm.UserProfile)
-                .Where(bm => bm.PoolIdFK == id)
+                .Include(bm => bm.UserProfile).Where(bm => bm.PoolIdFK == id)
                 .GroupBy(bm => new { bm.UserFK, bm.UserProfile.Name })
                 .Select(g => new MemberTableViewModel
                 {
@@ -57,8 +56,7 @@ public class PoolRepository : IPoolRepository
                     Contestant = $"{g.Count(x => x.IsCorrect == true)} / {g.Max(x => x.OrderOut)}",
                     Points = g.Sum(x => x.IsCorrect == true ? x.Points : 0)
                 })
-                .ToList()
-                .OrderByDescending(x => x.Points)
+                .ToList().OrderByDescending(x => x.Points)
                 .Select((x, index) =>
                 {
                     x.Rank = index + 1;
@@ -95,6 +93,13 @@ public class PoolRepository : IPoolRepository
         {
             throw new Exception("Failure to query and map summary.", e);
         }
+    }
+
+    public List<PoolSearchResultViewModel> GetSearchResult(string input)
+    {
+        List<PoolSearchResultViewModel> result = _mapper.ProjectTo<PoolSearchResultViewModel>(_context.Pools.Include(p => p.UserProfile)
+            .Where(p => p.HostFK.Contains(input) || p.Name.Contains(input) || p.SourceName.Contains(input)), null).ToList();
+        return result;
     }
 
     public Pool? GetPool(int id)
