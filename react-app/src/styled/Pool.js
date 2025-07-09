@@ -54,6 +54,7 @@ export const ContentBox = styled.div`
 
 export const PoolSource = styled.h2`
   font-weight: 900;
+  text-align: center;
 
   // Media Query to fix mobile formatting
   @media (max-width: 600px) {
@@ -64,6 +65,7 @@ export const PoolSource = styled.h2`
 
 export const PoolHost = styled.h3`
   margin-top: -1rem;
+  text-align: center;
 
   // Media Query to fix mobile formatting
   @media (max-width: 600px) {

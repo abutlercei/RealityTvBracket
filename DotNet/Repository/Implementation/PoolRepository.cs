@@ -8,19 +8,38 @@ public class PoolRepository : IPoolRepository
 {
     private readonly SamplePoolDBContext _context;
     private readonly IMapper _mapper;
-    public PoolRepository(SamplePoolDBContext context, IMapper mapper)
+    private readonly IServiceScopeFactory _scopeFactory;
+    public PoolRepository(SamplePoolDBContext context, IMapper mapper, IServiceScopeFactory scopeFactory)
     {
         _context = context;
         _mapper = mapper;
+        _scopeFactory = scopeFactory;
     }
 
-    public async Task<List<MemberTableViewModel>> GetAllMemberships(String username)
+    public async Task<List<MemberTableViewModel>> GetAllMemberships(string username)
     {
-        return await _mapper
-            .ProjectTo<MemberTableViewModel>
-                (_context.PoolMembers.Where(pm => pm.UsernameFK == username))
+        using var scope1 = _scopeFactory.CreateScope();
+        using var scope2 = _scopeFactory.CreateScope();
+        var context1 = scope1.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
+        var context2 = scope2.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
+
+        var poolMemTask = _mapper.ProjectTo<MemberTableViewModel>(
+            context1.PoolMembers
+                .Where(pm => pm.UsernameFK == username)
+                .OrderBy(pm => pm.Rank))
             .ToListAsync();
+
+        var bracketMemTask = _mapper.ProjectTo<MemberTableViewModel>(
+            context2.BracketMembers
+                .Where(bm => bm.UserFK == username)
+                .OrderBy(bm => bm.PoolIdFK))
+            .ToListAsync();
+
+        var results = await Task.WhenAll(poolMemTask, bracketMemTask);
+
+        return results[0].Concat(results[1]).ToList();
     }
+
 
     public List<MemberTableViewModel> GetAllMemberships(int id, bool isBracket)
     {

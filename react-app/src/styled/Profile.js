@@ -15,21 +15,22 @@ export const ProfileHeading = styled.h2`
 
 export const Container = styled.div`
   display: flex;
-  width: 80%;
+  width: 90%;
   flex-direction: row;
   gap: 3rem;
 
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     flex-direction: column;
   }
 `;
 
 export const Column = styled.div`
-  width: 80%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 2rem;
+  margin-bottom: 3rem;
 `;
 
 export const UserForm = styled.form`

@@ -140,7 +140,7 @@ export default function Home() {
   // Add conditional display using singlePoolView and add Pool object at bottom
   return (
     <PageContainer>
-      <h1>Reality Fights</h1>
+      {!singlePoolView && <h1>Reality Fights</h1>}
       {!singlePoolView && (
         <TableContainer>
           <Table>
