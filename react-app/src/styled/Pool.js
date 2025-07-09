@@ -14,6 +14,7 @@ export const PageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-bottom: 1rem;
+  width: 100%;
 `;
 
 export const PoolName = styled.h1`

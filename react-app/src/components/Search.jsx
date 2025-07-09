@@ -95,41 +95,50 @@ export default function Search() {
     if (e.target.value !== "") {
       setSearchEmpty(false);
       try {
-        setSearchResults([]);
         const response = await fetchSearchResults(e.target.value);
         if (response) {
-          console.log(response);
-          // Set local version of keys and if any values change, change key set state
-          // useEffect to set new search results
+          var newSearchKeys = [];
           Array.from(response).forEach((pool) => {
-            if (!searchKeys.includes(pool.poolId)) {
-              setSearchResults((prevPools) => [
-                ...prevPools,
-                <PoolItem
-                  key={pool.poolId}
-                  onClick={handleClickPoolCell}
-                  buttondata={pool.poolId}
-                >
-                  <h2 style={{ color: "hotpink" }} buttondata={pool.poolId}>
-                    {pool.poolName}
-                  </h2>
-                  <PoolItemContent buttondata={pool.poolId}>
-                    <PoolIconInfo>
-                      <ItemIcon icon={faPhotoFilm} />
-                      <h3 buttondata={pool.poolId}>{pool.sourceName}</h3>
-                    </PoolIconInfo>
-                    <PoolIconInfo>
-                      <ItemIcon icon={faUser} />
-                      <h3 buttondata={pool.poolId}>{pool.hostUsername}</h3>
-                    </PoolIconInfo>
-                  </PoolItemContent>
-                </PoolItem>,
-              ]);
-
-              setSearchKeys((prevKeys) => [...prevKeys, pool.poolId]);
+            if (!newSearchKeys.includes(pool.poolId)) {
+              newSearchKeys.push(pool.poolId);
             }
           });
-          setSearchKeys([]);
+
+          if (
+            searchKeys.length !== newSearchKeys.length ||
+            !newSearchKeys.every(
+              (element, index) => element === searchKeys[index]
+            )
+          ) {
+            setSearchResults([]);
+            setSearchKeys(newSearchKeys);
+            Array.from(response).forEach((pool) => {
+              if (newSearchKeys.includes(pool.poolId)) {
+                setSearchResults((prevPools) => [
+                  ...prevPools,
+                  <PoolItem
+                    key={pool.poolId}
+                    onClick={handleClickPoolCell}
+                    buttondata={pool.poolId}
+                  >
+                    <h2 style={{ color: "hotpink" }} buttondata={pool.poolId}>
+                      {pool.poolName}
+                    </h2>
+                    <PoolItemContent buttondata={pool.poolId}>
+                      <PoolIconInfo>
+                        <ItemIcon icon={faPhotoFilm} />
+                        <h3 buttondata={pool.poolId}>{pool.sourceName}</h3>
+                      </PoolIconInfo>
+                      <PoolIconInfo>
+                        <ItemIcon icon={faUser} />
+                        <h3 buttondata={pool.poolId}>{pool.hostUsername}</h3>
+                      </PoolIconInfo>
+                    </PoolItemContent>
+                  </PoolItem>,
+                ]);
+              }
+            });
+          }
         }
       } catch {
         console.error("Search results failed to load.");

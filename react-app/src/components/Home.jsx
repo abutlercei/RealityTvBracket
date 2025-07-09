@@ -247,7 +247,13 @@ export default function Home() {
         </TableContainer>
       )}
       {singlePoolView && (
-        <Pool data={poolInfo} onClick={handleArrowClick}></Pool>
+        <TableContainer>
+          <Pool
+            style={{ width: "100%" }}
+            data={poolInfo}
+            onClick={handleArrowClick}
+          ></Pool>
+        </TableContainer>
       )}
     </PageContainer>
   );

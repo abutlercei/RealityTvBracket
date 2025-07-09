@@ -2,8 +2,8 @@
 import styled from "styled-components";
 
 export const PageContainer = styled.div`
-  margin-left: 3rem;
-  margin-right: 3rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
