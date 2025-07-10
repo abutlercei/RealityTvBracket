@@ -26,12 +26,14 @@ public class PoolRepository : IPoolRepository
 
         var poolMemTask = _mapper.ProjectTo<MemberTableViewModel>(
             context1.PoolMembers
+                .Include(pm => pm.Pool)
                 .Where(pm => pm.UsernameFK == username)
                 .OrderBy(pm => pm.Rank))
             .ToListAsync();
 
         var bracketMemTask = _mapper.ProjectTo<MemberTableViewModel>(
             context2.BracketMembers
+                .Include(bm => bm.Pool)
                 .Where(bm => bm.UserFK == username)
                 .OrderBy(bm => bm.PoolIdFK))
             .ToListAsync();
@@ -52,7 +54,8 @@ public class PoolRepository : IPoolRepository
                 .GroupBy(bm => new { bm.UserFK, bm.UserProfile.Name })
                 .Select(g => new MemberTableViewModel
                 {
-                    Name = g.Key.Name,
+                    Name = g.Key.UserFK,
+                    UserPreferredName = g.Key.Name,
                     Contestant = $"{g.Count(x => x.IsCorrect == true)} / {g.Max(x => x.OrderOut)}",
                     Points = g.Sum(x => x.IsCorrect == true ? x.Points : 0)
                 })
@@ -67,7 +70,7 @@ public class PoolRepository : IPoolRepository
         else
         {
             result = _mapper.ProjectTo<MemberTableViewModel>
-                (_context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
+                (_context.PoolMembers.Include(bm => bm.UserProfile).Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
             .ToList();
         }
         return result.OrderBy(m => m.Rank).ToList();

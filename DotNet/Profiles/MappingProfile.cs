@@ -15,12 +15,20 @@ public class MappingProfile : Profile
                 opt => opt.MapFrom(src => src.UserProfile != null
                     ? src.UserProfile.Username : string.Empty));
         CreateMap<PoolMember, MemberTableViewModel>()
-            .ForMember(dest => dest.Name,
+            .ForMember(dest => dest.UserPreferredName,
                 opt => opt.MapFrom(src => src.UserProfile != null
-                    ? src.UserProfile.Name : string.Empty));
-        CreateMap<BracketMember, MemberTableViewModel>()
+                    ? src.UserProfile.Name : string.Empty))
             .ForMember(dest => dest.Name,
-                opt => opt.MapFrom(src => src.Pool != null
-                    ? src.Pool.Name : string.Empty));
+                opt => opt.MapFrom(src => src.UsernameFK))
+            .ForMember(dest => dest.PoolName,
+                opt => opt.MapFrom(src => src.Pool != null ? src.Pool.Name : null));
+        CreateMap<BracketMember, MemberTableViewModel>()
+            .ForMember(dest => dest.UserPreferredName,
+                opt => opt.MapFrom(src => src.UserProfile != null
+                    ? src.UserProfile.Name : string.Empty))
+            .ForMember(dest => dest.Name,
+                opt => opt.MapFrom(src => src.UserFK))
+            .ForMember(dest => dest.PoolName,
+                opt => opt.MapFrom(src => src.Pool != null ? src.Pool.Name : null));
     }
 }

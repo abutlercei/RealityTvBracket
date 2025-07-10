@@ -22,6 +22,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Pool(props) {
+  const username = import.meta.env.VITE_USERNAME;
+
   const [hostHightlighted, setHostHightlighted] = useState(false);
 
   const infoBackgroundColor = {
@@ -65,7 +67,7 @@ export default function Pool(props) {
               : "Single Contestant"}
           </PoolHost>
           <PoolBio>{props.data["pool"]["bio"]}</PoolBio>
-          {props.data["pool"]["hostFK"] === "abutler" ? (
+          {props.data["pool"]["hostFK"] === username ? (
             <JoinedDiv disabled="disabled">
               Joined
               <FontAwesomeIcon style={{ marginLeft: "1rem" }} icon={faCheck} />
@@ -87,6 +89,7 @@ export default function Pool(props) {
             username={props.data["pool"]["hostFK"]}
             isBracketStyle={props.data["pool"]["isBracketStyle"]}
             highlightState={hostHightlighted}
+            displayTitle={false}
           />
         </ContentBox>
       </PageContent>
