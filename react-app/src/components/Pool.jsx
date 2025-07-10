@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   PageContainer,
   PoolName,
@@ -25,11 +25,20 @@ export default function Pool(props) {
   const username = import.meta.env.VITE_USERNAME;
 
   const [hostHightlighted, setHostHightlighted] = useState(false);
+  const [isPoolMember, setIsPoolMember] = useState();
 
   const infoBackgroundColor = {
     backgroundColor: "rgba(131, 192, 193, 0.51)",
     boxShadow: "3px 3px 2px #83c0c1",
   };
+
+  useEffect(() => {
+    for (var mem in props.data.memberTables) {
+      if (props.data.memberTables[mem].name === username) {
+        setIsPoolMember(true);
+      }
+    }
+  }, []);
 
   // Event handler to join a pool
   function handleRequestToJoin(e) {
@@ -67,7 +76,7 @@ export default function Pool(props) {
               : "Single Contestant"}
           </PoolHost>
           <PoolBio>{props.data["pool"]["bio"]}</PoolBio>
-          {props.data["pool"]["hostFK"] === username ? (
+          {isPoolMember ? (
             <JoinedDiv disabled="disabled">
               Joined
               <FontAwesomeIcon style={{ marginLeft: "1rem" }} icon={faCheck} />
