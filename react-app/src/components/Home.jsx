@@ -32,28 +32,19 @@ export default function Home() {
   // Getting summary data upon refresh
   useEffect(() => {
     async function getSummary() {
-      try {
-        const response = await fetchSummaryView(username);
-        if (response) {
-          setTotals(response);
-        }
-      } catch {
-        console.error("Summary data failed to load");
-      }
+      fetchSummaryView(username)
+        .then((res) => updateSummaryValues(res))
+        .catch((err) => console.error("Summary data failed to load: " + err))
+        .finally(() => setIsLoading(false));
     }
     getSummary();
   }, []);
 
-  // Adding values to states displaying summary once totals is updated
-  useEffect(() => {
-    setMembers([]);
-    updateSummaryValues();
-    setIsLoading(false);
-  }, [totals]);
-
   // Logic for effect updating summary values
-  function updateSummaryValues() {
-    totals["allPools"].forEach((row) => {
+  function updateSummaryValues(res) {
+    setMembers([]);
+    setTotals(res);
+    res["allPools"].forEach((row) => {
       if (row["isBracketStyle"]) {
         const rowObj = { allCorrect: 0, allTotal: 0, points: 0 };
         const userPoints = {};
