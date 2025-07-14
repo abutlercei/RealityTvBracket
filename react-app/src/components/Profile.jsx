@@ -21,7 +21,9 @@ export default function Profile() {
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [data, setData] = useState([]);
   const [singlePoolTable, setSinglePoolTable] = useState([]);
+  const [hasSingleContestants, setHasSingleContestants] = useState(false);
   const [bracketTable, setBracketTable] = useState([]);
+  const [hasBrackets, setHasBrackets] = useState(false);
   const [viewMembership, setViewMembership] = useState(false);
   const [membershipFound, setMembershipFound] = useState(false);
 
@@ -106,11 +108,19 @@ export default function Profile() {
 
           response.forEach((viewModel) => {
             if (viewModel.orderOut != null) {
+              if (!hasBrackets) {
+                setHasBrackets(true);
+              }
+
               viewModel.rank = viewModel.orderOut;
               viewModel.points =
                 viewModel.isCorrect === true ? viewModel.points : 0;
               bracketData.push(viewModel);
             } else {
+              if (!hasSingleContestants) {
+                setHasSingleContestants(true);
+              }
+
               singlePoolData.push(viewModel);
             }
           });
@@ -178,20 +188,28 @@ export default function Profile() {
             >
               {membershipFound ? (
                 <div style={{ width: "100%" }}>
-                  <h3 style={{ textAlign: "center" }}>
-                    Single Contestant Pools
-                  </h3>
-                  <PoolTable
-                    tableData={singlePoolTable}
-                    displayTitle={true}
-                    style={tableStyle}
-                  />
-                  <h3 style={{ textAlign: "center" }}>Bracket Pools</h3>
-                  <PoolTable
-                    tableData={bracketTable}
-                    displayTitle={true}
-                    style={tableStyle}
-                  ></PoolTable>
+                  {hasSingleContestants && (
+                    <div>
+                      <h3 style={{ textAlign: "center" }}>
+                        Single Contestant Pools
+                      </h3>
+                      <PoolTable
+                        tableData={singlePoolTable}
+                        displayTitle={true}
+                        style={tableStyle}
+                      />
+                    </div>
+                  )}
+                  {hasBrackets && (
+                    <div>
+                      <h3 style={{ textAlign: "center" }}>Bracket Pools</h3>
+                      <PoolTable
+                        tableData={bracketTable}
+                        displayTitle={true}
+                        style={tableStyle}
+                      ></PoolTable>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <h3>No pools joined currently!</h3>
