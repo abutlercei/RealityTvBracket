@@ -7,13 +7,12 @@ import {
   AlternateRow,
 } from "../styled/PoolTable";
 import Pool from "./Pool.jsx";
+import Introduction from "./Introduction.jsx";
 import { fetchData } from "../services/poolService.js";
 import { fetchSummaryView } from "../services/poolService";
 import { ScaleLoader } from "react-spinners";
 
 export default function Home() {
-  const username = import.meta.env.VITE_USERNAME;
-
   const [totals, setTotals] = useState({
     singleContestantPoints: 0,
     singleContestantAverageRank: 0.0,
@@ -22,6 +21,7 @@ export default function Home() {
     allPools: [],
   });
 
+  const [username, setUsername] = useState(localStorage.getItem("username"));
   const [isLoading, setIsLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [bracketTables, setBracketTables] = useState({});
@@ -118,6 +118,9 @@ export default function Home() {
     setSinglePoolView(false);
   }
 
+  if (username === null) {
+    return <Introduction></Introduction>;
+  }
   // Add conditional display using singlePoolView and add Pool object at bottom
   return (
     <PageContainer>

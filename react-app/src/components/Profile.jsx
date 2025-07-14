@@ -14,9 +14,11 @@ import {
   Button,
   MembershipContainer,
 } from "../styled/Profile.js";
-import PoolTable from "./PoolTable";
+import PoolTable from "./PoolTable.jsx";
+import Login from "./Login.jsx";
 
 export default function Profile() {
+  const [username, setUsername] = useState(localStorage.getItem("username"));
   const [data, setData] = useState([]);
   const [singlePoolTable, setSinglePoolTable] = useState([]);
   const [bracketTable, setBracketTable] = useState([]);
@@ -34,8 +36,6 @@ export default function Profile() {
     outline: "1px",
     boxShadow: "3px 3px 2px black",
   };
-
-  const username = import.meta.env.VITE_USERNAME;
 
   // Fetching data on initial load to populate user data update fields
   useEffect(() => {
@@ -203,11 +203,11 @@ export default function Profile() {
       <div
         style={{
           display: data.length > 0 ? "none" : "flex",
+          flexDirection: "column",
         }}
       >
-        <ProfileTitle>
-          Please Sign Up or Login to Access Profile Information.
-        </ProfileTitle>
+        <ProfileTitle>Please Login to Access Profile Information.</ProfileTitle>
+        <Login setUsername={setUsername}></Login>
       </div>
     </div>
   );

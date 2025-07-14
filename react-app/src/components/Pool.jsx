@@ -22,8 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Pool(props) {
-  const username = import.meta.env.VITE_USERNAME;
-
+  const [username, setUsername] = useState(localStorage.getItem("username"));
   const [hostHightlighted, setHostHightlighted] = useState(false);
   const [isPoolMember, setIsPoolMember] = useState();
 
