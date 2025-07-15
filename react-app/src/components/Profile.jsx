@@ -51,8 +51,11 @@ export default function Profile() {
         console.error(`Error fetching items: ${err}`);
       }
     }
-    getData();
-  }, []);
+
+    if (username !== null) {
+      getData();
+    }
+  }, [username]);
 
   // Updating fields when data is populated or updated
   useEffect(() => {

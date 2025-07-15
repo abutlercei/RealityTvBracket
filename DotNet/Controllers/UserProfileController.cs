@@ -23,6 +23,16 @@ namespace DotNet.Controllers
                 : new OkObjectResult(result);
         }
 
+        [HttpPost("login")]
+        public IActionResult FindUser([FromForm] LoginModel model)
+        {
+            if (_service.FindUserProfile(model))
+            {
+                return Ok(new { message = "Login received", user = model.Username });
+            }
+            return new StatusCodeResult(401);
+        }
+
         [HttpPut("update")]
         public IActionResult UpdateUser([FromBody] UserProfile prof)
         {

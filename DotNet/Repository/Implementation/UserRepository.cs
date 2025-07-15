@@ -16,6 +16,12 @@ public class UserRepository : IUserRepository
         return _context.UserProfiles.Find(username);
     }
 
+    public bool FindUserProfile(LoginModel model)
+    {
+        return _context.UserProfiles.Find(model.Username) != null &&
+            _context.UserProfiles.Find(model.Username).Password == model.Password;
+    }
+
     public async void UpdateUserProfile(UserProfile profile)
     {
         var scope = _scopeFactory.CreateScope();

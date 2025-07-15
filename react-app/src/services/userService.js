@@ -8,6 +8,19 @@ export async function fetchData(id) {
   return response.json();
 }
 
+export async function findUser(formData) {
+  const resonse = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await resonse.json();
+  if (result.status == 401) {
+    return false;
+  }
+  return true;
+}
+
 export async function postData(userData) {
   try {
     const response = await fetch(`${API_URL}/update`, {

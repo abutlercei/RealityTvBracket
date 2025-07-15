@@ -24,7 +24,6 @@ export default function NavigationBar() {
   const navigate = useNavigate();
 
   function handleLogout() {
-    console.log("Handling logout");
     if (username === null) {
       navigate("/profile", { replace: true });
     } else {
