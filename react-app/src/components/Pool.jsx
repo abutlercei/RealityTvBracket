@@ -54,7 +54,11 @@ export default function Pool(props) {
         <ContentBox style={infoBackgroundColor}>
           <PoolSource>
             Pool from{" "}
-            <PageLink href={props.data["pool"]["sourceLink"]} target="_blank">
+            <PageLink
+              href={props.data["pool"]["sourceLink"]}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {props.data["pool"]["sourceName"]}
             </PageLink>
           </PoolSource>
