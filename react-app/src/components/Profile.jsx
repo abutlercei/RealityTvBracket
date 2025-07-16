@@ -14,12 +14,16 @@ import {
   Button,
   MembershipContainer,
 } from "../styled/Profile.js";
-import PoolTable from "./PoolTable";
+import PoolTable from "./PoolTable.jsx";
+import Login from "./Login.jsx";
 
 export default function Profile() {
+  const [username, setUsername] = useState(localStorage.getItem("username"));
   const [data, setData] = useState([]);
   const [singlePoolTable, setSinglePoolTable] = useState([]);
+  const [hasSingleContestants, setHasSingleContestants] = useState(false);
   const [bracketTable, setBracketTable] = useState([]);
+  const [hasBrackets, setHasBrackets] = useState(false);
   const [viewMembership, setViewMembership] = useState(false);
   const [membershipFound, setMembershipFound] = useState(false);
 
@@ -35,8 +39,6 @@ export default function Profile() {
     boxShadow: "3px 3px 2px black",
   };
 
-  const username = import.meta.env.VITE_USERNAME;
-
   // Fetching data on initial load to populate user data update fields
   useEffect(() => {
     async function getData() {
@@ -49,8 +51,11 @@ export default function Profile() {
         console.error(`Error fetching items: ${err}`);
       }
     }
-    getData();
-  }, []);
+
+    if (username !== null) {
+      getData();
+    }
+  }, [username]);
 
   // Updating fields when data is populated or updated
   useEffect(() => {
@@ -106,11 +111,19 @@ export default function Profile() {
 
           response.forEach((viewModel) => {
             if (viewModel.orderOut != null) {
+              if (!hasBrackets) {
+                setHasBrackets(true);
+              }
+
               viewModel.rank = viewModel.orderOut;
               viewModel.points =
                 viewModel.isCorrect === true ? viewModel.points : 0;
               bracketData.push(viewModel);
             } else {
+              if (!hasSingleContestants) {
+                setHasSingleContestants(true);
+              }
+
               singlePoolData.push(viewModel);
             }
           });
@@ -178,20 +191,28 @@ export default function Profile() {
             >
               {membershipFound ? (
                 <div style={{ width: "100%" }}>
-                  <h3 style={{ textAlign: "center" }}>
-                    Single Contestant Pools
-                  </h3>
-                  <PoolTable
-                    tableData={singlePoolTable}
-                    displayTitle={true}
-                    style={tableStyle}
-                  />
-                  <h3 style={{ textAlign: "center" }}>Bracket Pools</h3>
-                  <PoolTable
-                    tableData={bracketTable}
-                    displayTitle={true}
-                    style={tableStyle}
-                  ></PoolTable>
+                  {hasSingleContestants && (
+                    <div>
+                      <h3 style={{ textAlign: "center" }}>
+                        Single Contestant Pools
+                      </h3>
+                      <PoolTable
+                        tableData={singlePoolTable}
+                        displayTitle={true}
+                        style={tableStyle}
+                      />
+                    </div>
+                  )}
+                  {hasBrackets && (
+                    <div>
+                      <h3 style={{ textAlign: "center" }}>Bracket Pools</h3>
+                      <PoolTable
+                        tableData={bracketTable}
+                        displayTitle={true}
+                        style={tableStyle}
+                      ></PoolTable>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <h3>No pools joined currently!</h3>
@@ -203,11 +224,11 @@ export default function Profile() {
       <div
         style={{
           display: data.length > 0 ? "none" : "flex",
+          flexDirection: "column",
         }}
       >
-        <ProfileTitle>
-          Please Sign Up or Login to Access Profile Information.
-        </ProfileTitle>
+        <ProfileTitle>Please Login to Access Profile Information.</ProfileTitle>
+        <Login setUsername={setUsername}></Login>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { faBars, faSignIn, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import LayeredIcons from "./LayeredIcons";
 import {
   NavBar,
@@ -8,12 +9,29 @@ import {
   NavBarLinkList,
   NavBarLink,
   NavBarDropdownBox,
+  LoginButton,
+  LoginContainer,
   RightMobileIcon,
   NavBarMobileMenu,
   NavBarMobileLinks,
 } from "../styled/NavigationBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 
 export default function NavigationBar() {
+  const username = localStorage.getItem("username");
+  const [showLogout, setShowLogout] = useState(false);
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    if (username === null) {
+      navigate("/profile", { replace: true });
+    } else {
+      localStorage.clear();
+      window.location.reload();
+    }
+  }
+
   return (
     <NavBar>
       <NavBarLeft>
@@ -61,6 +79,28 @@ export default function NavigationBar() {
               >
                 Profile
               </NavBarLink>
+            </li>
+            <li>
+              <LoginButton
+                onMouseEnter={() => setShowLogout(true)}
+                onMouseLeave={() => setShowLogout(false)}
+                onClick={handleLogout}
+              >
+                {username === null ? (
+                  <FontAwesomeIcon icon={faSignIn} />
+                ) : (
+                  <FontAwesomeIcon icon={faSignOut} />
+                )}
+                {showLogout && (
+                  <LoginContainer>
+                    {username === null ? (
+                      <h4>Click to Login</h4>
+                    ) : (
+                      <h4>Click to Confirm Logout</h4>
+                    )}
+                  </LoginContainer>
+                )}
+              </LoginButton>
             </li>
           </NavBarLinkList>
         </NavBarRightDesktop>

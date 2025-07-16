@@ -22,8 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Pool(props) {
-  const username = import.meta.env.VITE_USERNAME;
-
+  const [username, setUsername] = useState(localStorage.getItem("username"));
   const [hostHightlighted, setHostHightlighted] = useState(false);
   const [isPoolMember, setIsPoolMember] = useState();
 
@@ -55,7 +54,11 @@ export default function Pool(props) {
         <ContentBox style={infoBackgroundColor}>
           <PoolSource>
             Pool from{" "}
-            <PageLink href={props.data["pool"]["sourceLink"]} target="_blank">
+            <PageLink
+              href={props.data["pool"]["sourceLink"]}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {props.data["pool"]["sourceName"]}
             </PageLink>
           </PoolSource>

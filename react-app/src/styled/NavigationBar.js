@@ -61,6 +61,25 @@ export const NavBarLink = styled(NavLink)`
   }
 `;
 
+export const LoginButton = styled.button`
+  background-color: transparent;
+  border: none;
+  color: #83c0c1;
+  font-size: 2rem;
+`;
+
+export const LoginContainer = styled.div`
+  position: absolute;
+  right: 1rem;
+  top: 3.5rem;
+  color: #6c22a6;
+  background-color: rgba(131, 192, 193, 1);
+  box-shadow: 3px 3px 2px #83c0c1;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+`;
+
 export const RightMobileIcon = styled(FontAwesomeIcon)`
   display: none;
   justify-self: flex-end;

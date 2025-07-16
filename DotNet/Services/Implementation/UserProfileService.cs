@@ -1,4 +1,5 @@
 using DotNet.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace DotNet.Services
 {
@@ -13,6 +14,15 @@ namespace DotNet.Services
         public UserProfile? GetUserProfile(string id)
         {
             return _repository.GetUserProfile(id);
+        }
+
+        public bool FindUserProfile(LoginModel model)
+        {
+            if (model == null || model.Username == null || model.Password == null)
+            {
+                return false;
+            }
+            return _repository.FindUserProfile(model);
         }
 
         public bool UpdateUserProfile(UserProfile profile)
