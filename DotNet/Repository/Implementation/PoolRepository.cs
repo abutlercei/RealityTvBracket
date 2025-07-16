@@ -7,12 +7,11 @@ public class PoolRepository : IPoolRepository
 {
     private readonly SamplePoolDBContext _context;
     private readonly IMapper _mapper;
-    private readonly IServiceScopeFactory _scopeFactory;
-    public PoolRepository(SamplePoolDBContext context, IMapper mapper, IServiceScopeFactory scopeFactory)
+    
+    public PoolRepository(SamplePoolDBContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _scopeFactory = scopeFactory;
     }
 
     public async Task<List<MemberTableViewModel>> GetAllMemberships(string username)
