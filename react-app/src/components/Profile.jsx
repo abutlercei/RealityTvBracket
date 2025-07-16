@@ -177,14 +177,19 @@ export default function Profile() {
               style={{ display: viewMembership ? "flex" : "none" }}
             >
               {membershipFound ? (
-                <div>
+                <div style={{ width: "100%" }}>
                   <h3 style={{ textAlign: "center" }}>
                     Single Contestant Pools
                   </h3>
-                  <PoolTable tableData={singlePoolTable} style={tableStyle} />
+                  <PoolTable
+                    tableData={singlePoolTable}
+                    displayTitle={true}
+                    style={tableStyle}
+                  />
                   <h3 style={{ textAlign: "center" }}>Bracket Pools</h3>
                   <PoolTable
                     tableData={bracketTable}
+                    displayTitle={true}
                     style={tableStyle}
                   ></PoolTable>
                 </div>

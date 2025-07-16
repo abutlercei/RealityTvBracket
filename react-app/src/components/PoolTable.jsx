@@ -54,9 +54,7 @@ export default function PoolTable(props) {
               className={row.name === tableHost ? "tableHost" : ""}
             >
               <TableCell>
-                {row.userPreferredName === null
-                  ? row.name
-                  : row.userPreferredName}
+                {props.displayTitle ? row.poolName : row.userPreferredName}
               </TableCell>
               <TableCell>{row.contestant}</TableCell>
               <TableCell>{row.rank}</TableCell>
@@ -68,9 +66,7 @@ export default function PoolTable(props) {
               className={row.name === tableHost ? "tableHost" : ""}
             >
               <TableCell>
-                {row.userPreferredName === null
-                  ? row.name
-                  : row.userPreferredName}
+                {props.displayTitle ? row.poolName : row.userPreferredName}
               </TableCell>
               <TableCell>{row.contestant}</TableCell>
               <TableCell>{row.rank}</TableCell>

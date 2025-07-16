@@ -1,5 +1,3 @@
-using System.Runtime.Intrinsics.X86;
-using System.Threading.Tasks;
 using AutoMapper;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
@@ -20,12 +18,14 @@ public class PoolRepository : IPoolRepository
     {
         var poolMemTask = await _mapper.ProjectTo<MemberTableViewModel>(
             _context.PoolMembers
+                .Include(pm => pm.Pool)
                 .Where(pm => pm.UsernameFK == username)
                 .OrderBy(pm => pm.Rank))
             .ToListAsync();
 
         var bracketMemTask = await _mapper.ProjectTo<MemberTableViewModel>(
             _context.BracketMembers
+                .Include(bm => bm.Pool)
                 .Where(bm => bm.UserFK == username)
                 .OrderBy(bm => bm.PoolIdFK))
             .ToListAsync();
@@ -39,17 +39,16 @@ public class PoolRepository : IPoolRepository
         if (isBracket)
         {
             result = _context.BracketMembers
-                .Include(bm => bm.UserProfile)
-                .Where(bm => bm.PoolIdFK == id)
+                .Include(bm => bm.UserProfile).Where(bm => bm.PoolIdFK == id)
                 .GroupBy(bm => new { bm.UserFK, bm.UserProfile.Name })
                 .Select(g => new MemberTableViewModel
                 {
-                    Name = g.Key.Name,
+                    Name = g.Key.UserFK,
+                    UserPreferredName = g.Key.Name,
                     Contestant = $"{g.Count(x => x.IsCorrect == true)} / {g.Max(x => x.OrderOut)}",
                     Points = g.Sum(x => x.IsCorrect == true ? x.Points : 0)
                 })
-                .ToList()
-                .OrderByDescending(x => x.Points)
+                .ToList().OrderByDescending(x => x.Points)
                 .Select((x, index) =>
                 {
                     x.Rank = index + 1;
@@ -60,7 +59,7 @@ public class PoolRepository : IPoolRepository
         else
         {
             result = _mapper.ProjectTo<MemberTableViewModel>
-                (_context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
+                (_context.PoolMembers.Include(bm => bm.UserProfile).Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
             .ToList();
         }
         return result.OrderBy(m => m.Rank).ToList();
@@ -86,6 +85,13 @@ public class PoolRepository : IPoolRepository
         {
             throw new Exception("Failure to query and map summary.", e);
         }
+    }
+
+    public List<PoolSearchResultViewModel> GetSearchResult(string input)
+    {
+        List<PoolSearchResultViewModel> result = _mapper.ProjectTo<PoolSearchResultViewModel>(_context.Pools.Include(p => p.UserProfile)
+            .Where(p => p.HostFK.Contains(input) || p.Name.Contains(input) || p.SourceName.Contains(input)), null).ToList();
+        return result;
     }
 
     public Pool? GetPool(int id)

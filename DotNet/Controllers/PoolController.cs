@@ -35,6 +35,13 @@ namespace DotNet.Controllers
             return vm == null ? new StatusCodeResult(404) : new OkObjectResult(vm); // Returns not found status since a null object indicates error finding in database
         }
 
+        [HttpGet("search/{input}")]
+        public IActionResult GetSearchResult(string input)
+        {
+            List<PoolSearchResultViewModel> result = _service.GetSearchResult(input);
+            return new OkObjectResult(result);
+        }
+
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {

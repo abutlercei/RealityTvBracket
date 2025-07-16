@@ -9,6 +9,7 @@ import {
 import Pool from "./Pool.jsx";
 import { fetchData } from "../services/poolService.js";
 import { fetchSummaryView } from "../services/poolService";
+import { ScaleLoader } from "react-spinners";
 
 export default function Home() {
   const username = import.meta.env.VITE_USERNAME;
@@ -20,9 +21,10 @@ export default function Home() {
     bracketTotalAccuracy: "0 / 0",
     allPools: [],
   });
+
+  const [isLoading, setIsLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [bracketTables, setBracketTables] = useState({});
-  // Change name to reflect view
   const [singlePoolView, setSinglePoolView] = useState(false);
   const [poolInfo, setPoolInfo] = useState([]);
   const [rowHighlighted, setRowHighlighted] = useState(null);
@@ -46,6 +48,7 @@ export default function Home() {
   useEffect(() => {
     setMembers([]);
     updateSummaryValues();
+    setIsLoading(false);
   }, [totals]);
 
   // Logic for effect updating summary values
@@ -128,7 +131,16 @@ export default function Home() {
   return (
     <PageContainer>
       {!singlePoolView && <h1>Reality Fights</h1>}
-      {!singlePoolView && (
+      {!singlePoolView && isLoading && (
+        <ScaleLoader
+          loading={true}
+          color="#6962ad"
+          height={500}
+          margin={10}
+          width={10}
+        />
+      )}
+      {!singlePoolView && !isLoading && (
         <TableContainer>
           <Table>
             <TableHeader>
@@ -246,8 +258,14 @@ export default function Home() {
             )}
         </TableContainer>
       )}
-      {singlePoolView && (
-        <Pool data={poolInfo} onClick={handleArrowClick}></Pool>
+      {singlePoolView && !isLoading && (
+        <TableContainer>
+          <Pool
+            style={{ width: "100%" }}
+            data={poolInfo}
+            onClick={handleArrowClick}
+          ></Pool>
+        </TableContainer>
       )}
     </PageContainer>
   );

@@ -9,5 +9,6 @@ namespace DotNet.Models.ViewModels
         public int? Points { get; set; }
         public int? OrderOut { get; set; }
         public Boolean? IsCorrect { get; set; }
+        public string? PoolName { get; set; }
     }
 }

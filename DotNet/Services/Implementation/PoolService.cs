@@ -36,5 +36,10 @@ namespace DotNet.Services
         {
             return _repository.GetSummaryViewModel(id);
         }
+
+        public List<PoolSearchResultViewModel> GetSearchResult(string input)
+        {
+            return _repository.GetSearchResult(input);
+        }
     }
 }

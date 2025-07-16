@@ -65,7 +65,6 @@ export const Button = styled.button`
 
 export const MembershipContainer = styled.div`
   display: none;
-  padding: 2rem;
   width: 100%;
   align-items: center;
   justify-content: center;

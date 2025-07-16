@@ -7,5 +7,6 @@ public interface IPoolRepository
     List<MemberTableViewModel> GetAllMemberships(int id, bool isBracket);
     Task<List<PoolSearchResultViewModel>> GetAllPools();
     SummaryViewModel GetSummaryViewModel(string id);
+    List<PoolSearchResultViewModel> GetSearchResult(string input);
     Pool? GetPool(int id);
 }
