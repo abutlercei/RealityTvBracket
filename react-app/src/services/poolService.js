@@ -8,6 +8,14 @@ export async function fetchData(id) {
   return response.json();
 }
 
+export async function fetchSummaryView(id) {
+  const response = await fetch(`${API_URL}/summary/${id}`);
+  if (!response.ok) {
+    throw new Error("Failed to find summary for user");
+  }
+  return response.json();
+}
+
 export async function fetchAllData() {
   const response = await fetch(`${API_URL}/all`);
   if (!response.ok) {

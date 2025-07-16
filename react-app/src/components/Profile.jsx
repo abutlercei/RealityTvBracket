@@ -18,13 +18,15 @@ import PoolTable from "./PoolTable";
 
 export default function Profile() {
   const [data, setData] = useState([]);
-  const [table, setTable] = useState([]);
+  const [singlePoolTable, setSinglePoolTable] = useState([]);
+  const [bracketTable, setBracketTable] = useState([]);
   const [viewMembership, setViewMembership] = useState(false);
   const [membershipFound, setMembershipFound] = useState(false);
 
   const infoBackgroundColor = {
     backgroundColor: "rgba(131, 192, 193, 0.51)",
     boxShadow: "3px 3px 2px #83c0c1",
+    maxHeight: "30rem",
   };
   const tableStyle = {
     margin: "2rem",
@@ -33,7 +35,7 @@ export default function Profile() {
     boxShadow: "3px 3px 2px black",
   };
 
-  const username = "abutler";
+  const username = import.meta.env.VITE_USERNAME;
 
   // Fetching data on initial load to populate user data update fields
   useEffect(() => {
@@ -99,12 +101,22 @@ export default function Profile() {
       try {
         const response = await fetchMembers(username);
         if (response) {
-          let data = [];
+          let singlePoolData = [],
+            bracketData = [];
+
           response.forEach((viewModel) => {
-            data.push(viewModel);
+            if (viewModel.orderOut != null) {
+              viewModel.rank = viewModel.orderOut;
+              viewModel.points =
+                viewModel.isCorrect === true ? viewModel.points : 0;
+              bracketData.push(viewModel);
+            } else {
+              singlePoolData.push(viewModel);
+            }
           });
 
-          setTable(data);
+          setSinglePoolTable(singlePoolData);
+          setBracketTable(bracketData);
           setMembershipFound(true);
         }
       } catch (err) {
@@ -165,7 +177,17 @@ export default function Profile() {
               style={{ display: viewMembership ? "flex" : "none" }}
             >
               {membershipFound ? (
-                <PoolTable tableData={table} style={tableStyle} />
+                <div>
+                  <h3 style={{ textAlign: "center" }}>
+                    Single Contestant Pools
+                  </h3>
+                  <PoolTable tableData={singlePoolTable} style={tableStyle} />
+                  <h3 style={{ textAlign: "center" }}>Bracket Pools</h3>
+                  <PoolTable
+                    tableData={bracketTable}
+                    style={tableStyle}
+                  ></PoolTable>
+                </div>
               ) : (
                 <h3>No pools joined currently!</h3>
               )}

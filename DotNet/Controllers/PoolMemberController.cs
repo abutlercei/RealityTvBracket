@@ -17,6 +17,7 @@ namespace DotNet.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfile(string id)
         {
+            Console.WriteLine($"Entering GetAllMemberships with id {id}");
             return new OkObjectResult(await _repository.GetAllMemberships(id));
         }
     }

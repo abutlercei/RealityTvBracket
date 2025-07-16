@@ -14,5 +14,6 @@ namespace DotNet.Models
         // Collections navigating dependent objects
         public ICollection<Pool> Pools { get; } = []; // Navigation property
         public ICollection<PoolMember> Members { get; } = []; // Navigation property
+        public ICollection<BracketMember> Brackets { get; } = []; // Navigation property
     }
 }

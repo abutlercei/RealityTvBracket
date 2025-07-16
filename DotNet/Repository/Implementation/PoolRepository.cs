@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using AutoMapper;
 using DotNet.Models;
@@ -8,31 +9,83 @@ public class PoolRepository : IPoolRepository
 {
     private readonly SamplePoolDBContext _context;
     private readonly IMapper _mapper;
+    
     public PoolRepository(SamplePoolDBContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<List<MemberTableViewModel>> GetAllMemberships(String username)
+    public async Task<List<MemberTableViewModel>> GetAllMemberships(string username)
     {
-        return await _mapper
-            .ProjectTo<MemberTableViewModel>
-                (_context.PoolMembers.Where(pm => pm.UsernameFK == username))
+        var poolMemTask = await _mapper.ProjectTo<MemberTableViewModel>(
+            _context.PoolMembers
+                .Where(pm => pm.UsernameFK == username)
+                .OrderBy(pm => pm.Rank))
             .ToListAsync();
+
+        var bracketMemTask = await _mapper.ProjectTo<MemberTableViewModel>(
+            _context.BracketMembers
+                .Where(bm => bm.UserFK == username)
+                .OrderBy(bm => bm.PoolIdFK))
+            .ToListAsync();
+
+        return poolMemTask.Concat(bracketMemTask).ToList();
     }
 
-    public async Task<List<MemberTableViewModel>> GetAllMemberships(int id)
+    public List<MemberTableViewModel> GetAllMemberships(int id, bool isBracket)
     {
-        return await _mapper
-            .ProjectTo<MemberTableViewModel>
+        List<MemberTableViewModel> result = [];
+        if (isBracket)
+        {
+            result = _context.BracketMembers
+                .Include(bm => bm.UserProfile)
+                .Where(bm => bm.PoolIdFK == id)
+                .GroupBy(bm => new { bm.UserFK, bm.UserProfile.Name })
+                .Select(g => new MemberTableViewModel
+                {
+                    Name = g.Key.Name,
+                    Contestant = $"{g.Count(x => x.IsCorrect == true)} / {g.Max(x => x.OrderOut)}",
+                    Points = g.Sum(x => x.IsCorrect == true ? x.Points : 0)
+                })
+                .ToList()
+                .OrderByDescending(x => x.Points)
+                .Select((x, index) =>
+                {
+                    x.Rank = index + 1;
+                    return x;
+                })
+                .ToList();
+        }
+        else
+        {
+            result = _mapper.ProjectTo<MemberTableViewModel>
                 (_context.PoolMembers.Where(pm => pm.PoolNameFK == id).OrderBy(pm => pm.Rank), null)
-            .ToListAsync();
+            .ToList();
+        }
+        return result.OrderBy(m => m.Rank).ToList();
     }
 
     public async Task<List<PoolSearchResultViewModel>> GetAllPools()
     {
         return await _mapper.ProjectTo<PoolSearchResultViewModel>(_context.Pools, null).ToListAsync();
+    }
+
+    public SummaryViewModel GetSummaryViewModel(string id)
+    {
+        try
+        {
+            SummaryViewModel summary = new SummaryViewModel();
+            List<Pool> pools = _context.Pools
+                .Include(p => p.Members).Include(p => p.Brackets)
+                .Where(p => p.Members.Any(m => m.UsernameFK == id)
+                || p.Brackets.Any(b => b.UserFK == id)).OrderBy(p => p.Id).ToList();
+            return summary.MapToSummaryViewModel(pools, id);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failure to query and map summary.", e);
+        }
     }
 
     public Pool? GetPool(int id)

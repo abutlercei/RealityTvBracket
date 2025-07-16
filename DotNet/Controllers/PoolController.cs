@@ -1,7 +1,9 @@
+using System.Net;
 using System.Threading.Tasks;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
 using DotNet.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +20,19 @@ namespace DotNet.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(int id)
         {
-            SinglePoolViewModel result = await _service.GetPoolView(id);
+            SinglePoolViewModel result = _service.GetPoolView(id);
             return (result.Pool == null) ?
                 new BadRequestResult()
                 : new OkObjectResult(result);
+        }
+
+        [HttpGet("summary/{id}")]
+        public IActionResult GetSummary(string id)
+        {
+            SummaryViewModel vm = _service.GetSummaryViewModel(id);
+            return vm == null ? new StatusCodeResult(404) : new OkObjectResult(vm); // Returns not found status since a null object indicates error finding in database
         }
 
         [HttpGet("all")]
