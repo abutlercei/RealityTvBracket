@@ -1,5 +1,3 @@
-using System.Runtime.Intrinsics.X86;
-using System.Threading.Tasks;
 using AutoMapper;
 using DotNet.Models;
 using DotNet.Models.ViewModels;
@@ -19,30 +17,22 @@ public class PoolRepository : IPoolRepository
 
     public async Task<List<MemberTableViewModel>> GetAllMemberships(string username)
     {
-        using var scope1 = _scopeFactory.CreateScope();
-        using var scope2 = _scopeFactory.CreateScope();
-        var context1 = scope1.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
-        var context2 = scope2.ServiceProvider.GetRequiredService<SamplePoolDBContext>();
-
-        var poolMemTask = _mapper.ProjectTo<MemberTableViewModel>(
-            context1.PoolMembers
+        var poolMemTask = await _mapper.ProjectTo<MemberTableViewModel>(
+            _context.PoolMembers
                 .Include(pm => pm.Pool)
                 .Where(pm => pm.UsernameFK == username)
                 .OrderBy(pm => pm.Rank))
             .ToListAsync();
 
-        var bracketMemTask = _mapper.ProjectTo<MemberTableViewModel>(
-            context2.BracketMembers
+        var bracketMemTask = await _mapper.ProjectTo<MemberTableViewModel>(
+            _context.BracketMembers
                 .Include(bm => bm.Pool)
                 .Where(bm => bm.UserFK == username)
                 .OrderBy(bm => bm.PoolIdFK))
             .ToListAsync();
 
-        var results = await Task.WhenAll(poolMemTask, bracketMemTask);
-
-        return results[0].Concat(results[1]).ToList();
+        return poolMemTask.Concat(bracketMemTask).ToList();
     }
-
 
     public List<MemberTableViewModel> GetAllMemberships(int id, bool isBracket)
     {
