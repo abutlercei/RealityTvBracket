@@ -4,100 +4,100 @@ trigger:
       - main
 
 variables:
-  buildConfiguration: 'Release'
-  frontendAppName: 'your-frontend-app-name'
-  backendAppName: 'your-backend-app-name'
-  azureSubscription: 'your-azure-service-connection-name'
+  buildConfiguration: "Release"
+  frontendAppName: "realityFightsReactApp"
+  backendAppName: "realityFightsDotnetApp"
+  azureSubscription: "deb4d489-b11a-4e35-aadb-6ae3ae046f7e"
 
 stages:
-# ----------------- BUILD STAGE -----------------
-- stage: Build
-  displayName: 'Build Frontend and Backend'
-  jobs:
-    - job: BuildFrontend
-      displayName: 'Build React Frontend'
-      pool:
-        vmImage: 'ubuntu-latest'
-      steps:
-        - task: NodeTool@0
-          inputs:
-            versionSpec: '18.x'
-          displayName: 'Install Node.js'
+  # ----------------- BUILD STAGE -----------------
+  - stage: Build
+    displayName: "Build Frontend and Backend"
+    jobs:
+      - job: BuildFrontend
+        displayName: "Build React Frontend"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "18.x"
+            displayName: "Install Node.js"
 
-        - script: |
-            cd frontend
-            npm install
-            npm run build
-          displayName: 'Build React App'
+          - script: |
+              cd frontend
+              npm install
+              npm run build
+            displayName: "Build React App"
 
-        - task: PublishBuildArtifacts@1
-          inputs:
-            pathToPublish: 'frontend/build'
-            artifactName: 'frontend'
-            publishLocation: 'Container'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: "frontend/build"
+              artifactName: "frontend"
+              publishLocation: "Container"
 
-    - job: BuildBackend
-      displayName: 'Build .NET Backend'
-      pool:
-        vmImage: 'windows-latest'
-      steps:
-        - task: UseDotNet@2
-          inputs:
-            packageType: 'sdk'
-            version: '7.x.x'
-            installationPath: $(Agent.ToolsDirectory)/dotnet
+      - job: BuildBackend
+        displayName: "Build .NET Backend"
+        pool:
+          vmImage: "windows-latest"
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: "sdk"
+              version: "7.x.x"
+              installationPath: $(Agent.ToolsDirectory)/dotnet
 
-        - script: |
-            cd backend
-            dotnet restore
-            dotnet build --configuration $(buildConfiguration)
-            dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/backend
-          displayName: 'Build .NET App'
+          - script: |
+              cd backend
+              dotnet restore
+              dotnet build --configuration $(buildConfiguration)
+              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/backend
+            displayName: "Build .NET App"
 
-        - task: PublishBuildArtifacts@1
-          inputs:
-            pathToPublish: '$(Build.ArtifactStagingDirectory)/backend'
-            artifactName: 'backend'
-            publishLocation: 'Container'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: "$(Build.ArtifactStagingDirectory)/backend"
+              artifactName: "backend"
+              publishLocation: "Container"
 
-# ----------------- DEPLOY FRONTEND -----------------
-- stage: DeployFrontend
-  displayName: 'Deploy React Frontend'
-  dependsOn: Build
-  jobs:
-    - deployment: DeployFrontend
-      environment: 'frontend-env'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              - download: current
-                artifact: frontend
+  # ----------------- DEPLOY FRONTEND -----------------
+  - stage: DeployFrontend
+    displayName: "Deploy React Frontend"
+    dependsOn: Build
+    jobs:
+      - deployment: DeployFrontend
+        environment: "frontend-env"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: frontend
 
-              - task: AzureWebApp@1
-                inputs:
-                  azureSubscription: $(azureSubscription)
-                  appType: 'webApp'
-                  appName: $(frontendAppName)
-                  package: '$(Pipeline.Workspace)/frontend'
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    appType: "webApp"
+                    appName: $(frontendAppName)
+                    package: "$(Pipeline.Workspace)/frontend"
 
-# ----------------- DEPLOY BACKEND -----------------
-- stage: DeployBackend
-  displayName: 'Deploy .NET Backend'
-  dependsOn: Build
-  jobs:
-    - deployment: DeployBackend
-      environment: 'backend-env'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              - download: current
-                artifact: backend
+  # ----------------- DEPLOY BACKEND -----------------
+  - stage: DeployBackend
+    displayName: "Deploy .NET Backend"
+    dependsOn: Build
+    jobs:
+      - deployment: DeployBackend
+        environment: "backend-env"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: backend
 
-              - task: AzureWebApp@1
-                inputs:
-                  azureSubscription: $(azureSubscription)
-                  appType: 'webApp'
-                  appName: $(backendAppName)
-                  package: '$(Pipeline.Workspace)/backend'
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    appType: "webApp"
+                    appName: $(backendAppName)
+                    package: "$(Pipeline.Workspace)/backend"
