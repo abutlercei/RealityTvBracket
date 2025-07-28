@@ -13,17 +13,17 @@ steps:
   - task: UseDotNet@2
     inputs:
       packageType: "sdk"
-      version: "7.x.x" # or your version
+      version: "9.0.303"
 
   - task: DotNetCoreCLI@2
     inputs:
       command: "restore"
-      projects: "**/*.csproj"
+      projects: "server/DotNet.csproj"
 
   - task: DotNetCoreCLI@2
     inputs:
       command: "build"
-      projects: "**/*.csproj"
+      projects: "server/DotNet.csproj"
       arguments: "--configuration $(buildConfiguration)"
 
   - task: DotNetCoreCLI@2
