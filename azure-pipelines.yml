@@ -60,6 +60,27 @@ stages:
               artifactName: "backend"
               publishLocation: "Container"
 
+    # ----------------- DEPLOY BACKEND -----------------
+  - stage: DeployBackend
+    displayName: "Deploy .NET Backend"
+    dependsOn: Build
+    jobs:
+      - deployment: DeployBackend
+        environment: "backend-env"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: backend
+
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    appType: "webApp"
+                    appName: $(backendAppName)
+                    package: "$(Pipeline.Workspace)/backend"
+
   # ----------------- DEPLOY FRONTEND -----------------
   - stage: DeployFrontend
     displayName: "Deploy React Frontend"
@@ -80,24 +101,3 @@ stages:
                     appType: "webApp"
                     appName: $(frontendAppName)
                     package: "$(Pipeline.Workspace)/frontend"
-
-  # ----------------- DEPLOY BACKEND -----------------
-  - stage: DeployBackend
-    displayName: "Deploy .NET Backend"
-    dependsOn: Build
-    jobs:
-      - deployment: DeployBackend
-        environment: "backend-env"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: backend
-
-                - task: AzureWebApp@1
-                  inputs:
-                    azureSubscription: $(azureSubscription)
-                    appType: "webApp"
-                    appName: $(backendAppName)
-                    package: "$(Pipeline.Workspace)/backend"
