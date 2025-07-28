@@ -20,7 +20,7 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: "client/build"
+      SourceFolder: "client/dist"
       Contents: "**"
       TargetFolder: "$(Build.ArtifactStagingDirectory)"
 
