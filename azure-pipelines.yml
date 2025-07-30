@@ -53,6 +53,9 @@ stages:
               dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/server
             displayName: "Build .NET App"
 
+          - script: dotnet --version
+            displayName: "Check .NET SDK Version"
+
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: "$(Build.ArtifactStagingDirectory)/server"
