@@ -51,9 +51,7 @@ stages:
               dotnet restore
               dotnet build --configuration $(buildConfiguration)
               dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
-              powershell -Command "(Get-Content $(Build.ArtifactStagingDirectory)/web.config) -replace 'stdoutLogEnabled=\"false\"', 'stdoutLogEnabled=\"true\"' | Set-Content $(Build.ArtifactStagingDirectory)/web.config"
-              mkdir -p $(Build.ArtifactStagingDirectory)/logs
-            displayName: "Build .NET App with stdout logging"
+            displayName: "Build .NET App"
 
           - script: dotnet --version
             displayName: "Check .NET SDK Version"
