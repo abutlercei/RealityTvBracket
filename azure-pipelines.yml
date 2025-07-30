@@ -50,7 +50,7 @@ stages:
               cd server
               dotnet restore
               dotnet build --configuration $(buildConfiguration)
-              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --stdoutLogEnabled true
             displayName: "Build .NET App"
 
           - script: dotnet --version
