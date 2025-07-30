@@ -48,16 +48,7 @@ stages:
 
           - script: |
               cd server
-            displayName: "Navigate to Server Folder"
-
-          - task: DotNetCoreCLI@2
-            displayName: restore
-            inputs:
-              command: restore
-              projects: "**/*.csproj"
-              feedsToUse: config
-
-          - script: |
+              dotnet restore
               dotnet build --configuration $(buildConfiguration)
               dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
             displayName: "Build .NET App"
