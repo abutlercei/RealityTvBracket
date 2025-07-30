@@ -32,7 +32,7 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: "client/build"
+              pathToPublish: "dist/build"
               artifactName: "frontend"
               publishLocation: "Container"
 
@@ -48,15 +48,15 @@ stages:
               installationPath: $(Agent.ToolsDirectory)/dotnet
 
           - script: |
-              cd backend
+              cd server
               dotnet restore
               dotnet build --configuration $(buildConfiguration)
-              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/backend
+              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/server
             displayName: "Build .NET App"
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: "$(Build.ArtifactStagingDirectory)/backend"
+              pathToPublish: "$(Build.ArtifactStagingDirectory)/server"
               artifactName: "backend"
               publishLocation: "Container"
 
