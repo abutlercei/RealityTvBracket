@@ -7,7 +7,6 @@ variables:
   buildConfiguration: "Release"
   frontendAppName: "realityFightsReactApp"
   backendAppName: "realityFightsDotnetApp"
-  azureSubscription: "AzureRMConnection"
 
 stages:
   # ----------------- BUILD STAGE -----------------
@@ -76,7 +75,7 @@ stages:
 
                 - task: AzureWebApp@1
                   inputs:
-                    azureSubscription: $(azureSubscription)
+                    azureSubscription: "AzureRMConnection"
                     appType: "webApp"
                     appName: $(backendAppName)
                     package: "$(Pipeline.Workspace)/backend"
@@ -97,7 +96,7 @@ stages:
 
                 - task: AzureWebApp@1
                   inputs:
-                    azureSubscription: $(azureSubscription)
+                    azureSubscription: "AzureRMReactConnection"
                     appType: "webApp"
                     appName: $(frontendAppName)
                     package: "$(Pipeline.Workspace)/frontend"
