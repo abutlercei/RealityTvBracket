@@ -7,7 +7,7 @@ variables:
   buildConfiguration: "Release"
   frontendAppName: "realityFightsReactApp"
   backendAppName: "realityFightsDotnetApp"
-  azureSubscription: "deb4d489-b11a-4e35-aadb-6ae3ae046f7e"
+  azureSubscription: "AzureRMConnection"
 
 stages:
   # ----------------- BUILD STAGE -----------------
