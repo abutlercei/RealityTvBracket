@@ -58,7 +58,7 @@ stages:
 
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/server"
+              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)"
               includeRootFolder: false
               archiveType: "zip"
               archiveFile: "$(Build.ArtifactStagingDirectory)/backend.zip"
