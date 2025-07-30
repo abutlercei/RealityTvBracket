@@ -50,8 +50,12 @@ stages:
               cd server
               dotnet restore
               dotnet build --configuration $(buildConfiguration)
-              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --stdoutLogEnabled true
-            displayName: "Build .NET App"
+              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+              # Enabling stdout logging
+              sed -i 's/stdoutLogEnabled="false"/stdoutLogEnabled="true"/' $(Build.ArtifactStagingDirectory)/web.config
+              # Ensuring logs directory exists
+              mkdir -p $(Build.ArtifactStagingDirectory)/logs
+            displayName: "Build .NET App with stdout logging"
 
           - script: dotnet --version
             displayName: "Check .NET SDK Version"
