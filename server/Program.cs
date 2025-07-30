@@ -25,7 +25,6 @@ builder.Services.AddCors(options =>
 });
 
 // Register Database Context
-
 builder.Services.AddDbContext<SamplePoolDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -62,8 +61,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.UseCors();
 
 // Map API Controllers
@@ -84,9 +81,7 @@ app.MapWhen(context => !context.Request.Path.StartsWithSegments("/api"), spa =>
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 
