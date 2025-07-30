@@ -50,18 +50,25 @@ stages:
               cd server
               dotnet restore
               dotnet build --configuration $(buildConfiguration)
-              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/server --self-contained false -r win-x64
+              dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/server --self-contained true -r win-x64
             displayName: "Build .NET App"
 
           - script: dotnet --version
             displayName: "Check .NET SDK Version"
 
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/server"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/backend.zip"
+              replaceExistingArchive: true
+
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: "$(Build.ArtifactStagingDirectory)/server"
+              pathToPublish: "$(Build.ArtifactStagingDirectory)/backend.zip"
               artifactName: "backend"
               publishLocation: "Container"
-
     # ----------------- DEPLOY BACKEND -----------------
   - stage: DeployBackend
     displayName: "Deploy .NET Backend"
@@ -81,7 +88,7 @@ stages:
                     azureSubscription: "AzureRMConnection"
                     appType: "webApp"
                     appName: $(backendAppName)
-                    package: "$(Pipeline.Workspace)/backend"
+                    package: "$(Pipeline.Workspace)/backend/backend.zip"
 
   # ----------------- DEPLOY FRONTEND -----------------
   - stage: DeployFrontend
