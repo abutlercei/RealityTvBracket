@@ -63,23 +63,30 @@ stages:
               arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)"
               zipAfterPublish: true
 
-          - task: PowerShell@2
-            displayName: "Rename published zip to backend.zip"
+          # - task: PowerShell@2
+          #   displayName: "Rename published zip to backend.zip"
+          #   inputs:
+          #     targetType: "inline"
+          #     script: |
+          #       $zip = Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Filter *.zip | Select-Object -First 1
+          #       if ($zip) {
+          #         Write-Host "Found zip: $($zip.FullName)"
+          #         Rename-Item -Path $zip.FullName -NewName "$($zip.DirectoryName)\backend.zip"
+          #         Write-Host "Renamed zip to $zip.DirectoryName with child backend.zip"
+          #       } else {
+          #         Write-Error "No zip file found to rename."
+          #       }
+
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
             inputs:
-              targetType: "inline"
-              script: |
-                $zip = Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Filter *.zip | Select-Object -First 1
-                if ($zip) {
-                  Write-Host "Found zip: $($zip.FullName)"
-                  Rename-Item -Path $zip.FullName -NewName "$($zip.DirectoryName)\backend.zip"
-                  Write-Host "Renamed zip to $zip.DirectoryName with child backend.zip"
-                } else {
-                  Write-Error "No zip file found to rename."
-                }
+              rootFolderOrFile: "$(System.DefaultWorkingDirectory)"
+              includeRootFolder: false
+              archiveFile: "$(System.DefaultWorkingDirectory)/backend.zip"
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: "$(Build.ArtifactStagingDirectory)"
+              pathToPublish: "$(Build.ArtifactStagingDirectory)/backend.zip"
               artifactName: "backend"
               publishLocation: "Container"
 
