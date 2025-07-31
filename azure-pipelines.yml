@@ -116,7 +116,7 @@ stages:
                     azureSubscription: "AzureRMConnection"
                     appType: "webApp"
                     WebAppName: $(backendAppName)
-                    packageForWindows: "$(Pipeline.Workspace)/backend"
+                    packageForWindows: "$(Pipeline.Workspace)"
     #             - download: current
     #               artifact: backend
 
