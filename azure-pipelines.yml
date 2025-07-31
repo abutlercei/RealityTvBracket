@@ -135,6 +135,7 @@ stages:
                     }
                   displayName: "Verify backend.zip exists"
                   failOnStderr: true
+                  shell: "powershell"
 
                 - task: AzureRmWebAppDeployment@4
                   inputs:
