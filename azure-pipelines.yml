@@ -105,6 +105,7 @@ stages:
               steps:
                 - download: current
                   artifact: backend
+                  path: "$(Pipeline.Workspace)/backend"
                   displayName: "Download backend artifact"
 
                 - task: PowerShell@2
@@ -132,7 +133,7 @@ stages:
                     azureSubscription: "AzureRMConnection"
                     appType: "webApp"
                     WebAppName: "$(backendAppName)"
-                    packageForWindows: "$(Pipeline.Workspace)/backend/backend.zip"
+                    packageForWindows: "$(Pipeline.Workspace)\backend\backend.zip"
 
   # ----------------- DEPLOY FRONTEND -----------------
   - stage: DeployFrontend
