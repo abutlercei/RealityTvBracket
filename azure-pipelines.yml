@@ -100,24 +100,22 @@ stages:
     pool:
       vmImage: "windows-latest"
     jobs:
-      steps:
-        - download: current
-          artifact: backend
+      - deployment: DeployBackend
+        environment: "backend-env"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: backend
 
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: "AzureRM"
-            azureSubscription: "AzureRMConnection"
-            appType: "webApp"
-            WebAppName: $(backendAppName)
-            packageForWindows: "$(Pipeline.Workspace)/backend"
-    # jobs:
-    #   - deployment: DeployBackend
-    #     environment: "backend-env"
-    #     strategy:
-    #       runOnce:
-    #         deploy:
-    #           steps:
+                - task: AzureRmWebAppDeployment@4
+                  inputs:
+                    ConnectionType: "AzureRM"
+                    azureSubscription: "AzureRMConnection"
+                    appType: "webApp"
+                    WebAppName: $(backendAppName)
+                    packageForWindows: "$(Pipeline.Workspace)/backend"
     #             - download: current
     #               artifact: backend
 
