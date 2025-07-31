@@ -83,12 +83,6 @@ stages:
               artifactName: "backend"
               publishLocation: "Container"
 
-          - script: |
-              echo "Pipeline.Workspace: $(Pipeline.Workspace)"
-              echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
-              echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
-            displayName: "Debug: Print Path Variables"
-
     # ----------------- DEPLOY BACKEND -----------------
   - stage: DeployBackend
     displayName: "Deploy .NET Backend"
