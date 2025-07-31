@@ -117,15 +117,15 @@ stages:
                   artifact: backend
 
                 - script: |
+                    echo "Checking contents of backend artifacts:"
+                    dir "$(Pipeline.Workspace)/backend" -Recurse
+                  displayName: "Debug: List backend artifact contents"
+
+                - script: |
                     echo "Pipeline.Workspace: $(Pipeline.Workspace)"
                     echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
                     echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
                   displayName: "Debug: Print Path Variables"
-
-                - script: |
-                    echo "Checking contents of backend artifacts:"
-                    dir "$(Pipeline.Workspace)/backend" -Recurse
-                  displayName: "Debug: List backend artifact contents"
 
                 - task: AzureRmWebAppDeployment@4
                   inputs:
