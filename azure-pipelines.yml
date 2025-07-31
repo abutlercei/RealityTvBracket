@@ -129,13 +129,14 @@ stages:
                 - download: current
                   artifact: backend
 
-                - script: |
-                    if (!(Test-Path "$(Pipeline.Workspace)/backend/backend.zip")) {
-                      Write-Error "backend.zip not found!"
-                    }
+                - task: PowerShell@2
                   displayName: "Verify backend.zip exists"
-                  failOnStderr: true
-                  shell: "powershell"
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      if (!(Test-Path "$(Pipeline.Workspace)/backend/backend.zip")) {
+                        Write-Error "backend.zip not found!"
+                      }
 
                 - task: AzureRmWebAppDeployment@4
                   inputs:
