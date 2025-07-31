@@ -42,9 +42,7 @@ stages:
         steps:
           - task: UseDotNet@2
             inputs:
-              # packageType: "sdk"
               version: "8.0.x"
-              # installationPath: $(Agent.ToolsDirectory)/dotnet
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -71,7 +69,8 @@ stages:
               script: |
                 $zip = Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Filter *.zip | Select-Object -First 1
                 if ($zip) {
-                  Rename-Item -Path $zip.FullName -NewName "backend.zip"
+                  Rename-Item -Path $zip.FullName -NewName "$($zip.DirectoryName)\backend.zip"
+                  Write-Host "Renamed zip to $zip.DirectoryName with child backend.zip"
                 } else {
                   Write-Error "No zip file found to rename."
                 }
@@ -87,30 +86,6 @@ stages:
               echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
               echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
             displayName: "Debug: Print Path Variables"
-
-          # - script: |
-          #     cd server
-          #     dotnet restore
-          #     dotnet build --configuration $(buildConfiguration)
-          #     dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
-          #   displayName: "Build .NET App"
-
-          # - script: dotnet --version
-          #   displayName: "Check .NET SDK Version"
-
-          # - task: ArchiveFiles@2
-          #   inputs:
-          #     rootFolderOrFile: "$(Build.ArtifactStagingDirectory)"
-          #     includeRootFolder: false
-          #     archiveType: "zip"
-          #     archiveFile: "$(Build.ArtifactStagingDirectory)/backend.zip"
-          #     replaceExistingArchive: true
-
-          # - task: PublishBuildArtifacts@1
-          #   inputs:
-          #     pathToPublish: "$(Build.ArtifactStagingDirectory)/backend.zip"
-          #     artifactName: "backend"
-          #     publishLocation: "Container"
 
     # ----------------- DEPLOY BACKEND -----------------
   - stage: DeployBackend
@@ -156,16 +131,6 @@ stages:
                     appType: "webApp"
                     WebAppName: "$(backendAppName)"
                     packageForWindows: "$(Pipeline.Workspace)/backend/backend.zip"
-
-    #             - download: current
-    #               artifact: backend
-
-    #             - task: AzureWebApp@1
-    #               inputs:
-    #                 azureSubscription: "AzureRMConnection"
-    #                 appType: "webApp"
-    #                 appName: $(backendAppName)
-    #                 package: "$(Pipeline.Workspace)/backend/backend.zip"
 
   # ----------------- DEPLOY FRONTEND -----------------
   - stage: DeployFrontend
