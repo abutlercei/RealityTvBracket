@@ -78,13 +78,13 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: "$(Build.ArtifactStagingDirectory)"
+              pathToPublish: "$(Build.ArtifactStagingDirectory)/backend"
               artifactName: "backend"
               publishLocation: "Container"
 
           - script: |
               echo "Pipeline.Workspace: $(Pipeline.Workspace)"
-              echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
+              echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)/backend"
               echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
             displayName: "Debug: Print Path Variables"
 
