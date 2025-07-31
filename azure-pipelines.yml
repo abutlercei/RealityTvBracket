@@ -103,10 +103,11 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: current
-                  artifact: backend
-                  path: "$(Pipeline.Workspace)/backend"
+                - task: DownloadPipelineArtifact@2
                   displayName: "Download backend artifact"
+                  inputs:
+                    artifact: backend
+                    path: "$(Pipeline.Workspace)/backend"
 
                 - task: PowerShell@2
                   displayName: "Verify backend.zip exists"
