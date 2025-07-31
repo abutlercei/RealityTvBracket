@@ -130,11 +130,6 @@ stages:
                   artifact: backend
 
                 - script: |
-                    echo "Checking contents of backend artifacts:"
-                    dir "$(Pipeline.Workspace)/backend" -Recurse
-                  displayName: "Debug: List backend artifact contents"
-
-                - script: |
                     if (!(Test-Path "$(Pipeline.Workspace)/backend/backend.zip")) {
                       Write-Error "backend.zip not found!"
                     }
