@@ -69,6 +69,12 @@ stages:
               pathToPublish: "$(Build.ArtifactStagingDirectory)"
               artifactName: "backend"
 
+          - script: |
+              echo "Pipeline.Workspace: $(Pipeline.Workspace)"
+              echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
+              echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
+            displayName: "Debug: Print Path Variables"
+
           # - script: |
           #     cd server
           #     dotnet restore
@@ -114,7 +120,13 @@ stages:
                     echo "Pipeline.Workspace: $(Pipeline.Workspace)"
                     echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
                     echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
-                  displayName: "Print Path Variables"
+                  displayName: "Debug: Print Path Variables"
+
+                - script: |
+                    echo "Checking contents of backend artifacts:"
+                    dir "$(Pipeline.Workspace)/backend" -Recurse
+                  displayName: "Debug: List backend artifact contents"
+                  shell: pwsh
 
                 - task: AzureRmWebAppDeployment@4
                   inputs:
