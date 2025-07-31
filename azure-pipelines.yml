@@ -63,7 +63,7 @@ stages:
               publishWebProjects: true
               arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)"
               zipAfterPublish: true
-          - task: PublishBuildArtifacts
+          - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: "$(Build.ArtifactStagingDirectory)/backend"
               artifactName: "backend"
