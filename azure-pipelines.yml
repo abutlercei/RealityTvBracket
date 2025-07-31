@@ -126,7 +126,6 @@ stages:
                     echo "Checking contents of backend artifacts:"
                     dir "$(Pipeline.Workspace)/backend" -Recurse
                   displayName: "Debug: List backend artifact contents"
-                  shell: pwsh
 
                 - task: AzureRmWebAppDeployment@4
                   inputs:
