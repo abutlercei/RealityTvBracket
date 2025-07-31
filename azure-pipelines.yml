@@ -82,7 +82,7 @@ stages:
             inputs:
               rootFolderOrFile: "$(System.DefaultWorkingDirectory)"
               includeRootFolder: false
-              archiveFile: "$(System.ArtifactStagingDirectory)/backend.zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/backend.zip"
 
           - task: PublishBuildArtifacts@1
             inputs:
