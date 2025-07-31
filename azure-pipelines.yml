@@ -58,6 +58,7 @@ stages:
           - task: DotNetCoreCLI@2
             inputs:
               command: "publish"
+              projects: "**/DotNet.csproj"
               publishWebProjects: true
               arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)"
               zipAfterPublish: true
@@ -69,6 +70,7 @@ stages:
               script: |
                 $zip = Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Filter *.zip | Select-Object -First 1
                 if ($zip) {
+                  Write-Host "Found zip: $($zip.FullName)"
                   Rename-Item -Path $zip.FullName -NewName "$($zip.DirectoryName)\backend.zip"
                   Write-Host "Renamed zip to $zip.DirectoryName with child backend.zip"
                 } else {
