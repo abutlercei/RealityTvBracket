@@ -110,6 +110,12 @@ stages:
                 - download: current
                   artifact: backend
 
+                - script: |
+                    echo "Pipeline.Workspace: $(Pipeline.Workspace)"
+                    echo "Build.ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)"
+                    echo "System.DefaultWorkingDirectory: $(System.DefaultWorkingDirectory)"
+                  displayName: "Print Path Variables"
+
                 - task: AzureRmWebAppDeployment@4
                   inputs:
                     ConnectionType: "AzureRM"
