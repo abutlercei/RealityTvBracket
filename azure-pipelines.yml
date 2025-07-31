@@ -128,14 +128,18 @@ stages:
               steps:
                 - download: current
                   artifact: backend
+                  displayName: "Download backend artifact"
 
                 - task: PowerShell@2
                   displayName: "Verify backend.zip exists"
                   inputs:
                     targetType: "inline"
                     script: |
-                      if (!(Test-Path "$(Pipeline.Workspace)/backend/backend.zip")) {
-                        Write-Error "backend.zip not found!"
+                      $path = "$(Pipeline.Workspace)\backend\backend.zip"
+                      if (Test-Path $path) {
+                        Write-Host "Found: $path"
+                      } else {
+                        Write-Error "Missing: $path"
                       }
 
                 - task: AzureRmWebAppDeployment@4
